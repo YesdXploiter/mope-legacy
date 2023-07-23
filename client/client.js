@@ -20075,7 +20075,7 @@ function wsIsOpen() {
 
 function worldUpdate(msg) {
   timestamp = +new Date();
-  console.log("UPD: " + (timestamp - lastUpdT) + " ms ");
+  // console.log("UPD: " + (timestamp - lastUpdT) + " ms ");
   lastUpdT = timestamp;
 
   worldUpd_readPlayerInfoMessage(msg);
