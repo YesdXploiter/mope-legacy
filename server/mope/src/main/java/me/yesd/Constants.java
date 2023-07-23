@@ -26,4 +26,5 @@ public class Constants {
         public static final double ROTATION_ACCELERATION = 16;
         public static final double DEFAULTANGLESPEED = 0.2;
         public static final double MAXROTSPEED = 65;
+        public static final double SMOOTHNESS = 0.3;
 }

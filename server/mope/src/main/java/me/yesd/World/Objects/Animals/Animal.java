@@ -128,8 +128,7 @@ public class Animal extends GameObject {
     public void rotateTowards(double targetX, double targetY) {
         double playerX = this.getX(); // player x position
         double playerY = this.getY(); // player y position
-        double rotationSpeed = Constants.DEFAULTANGLESPEED;
-        double maxRotationSpeed = Constants.MAXROTSPEED * rotationSpeed;
+        double smoothness = Constants.SMOOTHNESS; // smoothness of rotation
 
         // Calculate the target angle
         double targetAngle = Math.atan2(targetY - playerY, targetX - playerX) * (180 / Math.PI);
@@ -147,19 +146,14 @@ public class Animal extends GameObject {
             diff += 360;
         }
 
-        // Determine the rotation speed
-        if (Math.abs(diff) > Constants.MIN_DELTA_ANGLE) {
-            rotationSpeed += Constants.ROTATION_ACCELERATION * Math.abs(diff);
-            rotationSpeed = Math.min(rotationSpeed, maxRotationSpeed);
-        }
+        // Use lerp to smoothly rotate towards the target angle
+        double newAngle = currentAngle + diff * smoothness;
 
-        // Limit the rotation speed
-        if (Math.abs(diff) > rotationSpeed) {
-            diff = rotationSpeed * Math.signum(diff);
-        }
+        // Ensure newAngle is within [0, 360)
+        newAngle = (newAngle + 360) % 360;
 
-        // Add the diff to the current angle
-        this.setAngle(currentAngle + diff);
+        // Set the new angle
+        this.setAngle(newAngle);
     }
 
     private void movement() {
