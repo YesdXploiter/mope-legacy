@@ -23,8 +23,24 @@ public class GameObject {
     private int species = 0;
     public boolean showHP = false;
     public boolean isHurted = false;
+    public boolean showWater = false;
     protected int health = 0;
     protected int maxHealth = 0;
+    protected int water = 100;
+    protected int maxWater = 100;
+    public int getWater() { return this.water; }
+    public void addWater(int amount) {
+        this.water += amount;
+
+        if (this.water > this.getMaxWater()) this.water = this.getMaxWater();
+    }
+    public void removeWater(int amount) {
+        this.water -= amount;
+
+        if (this.water < 0) this.water = 0;
+    }
+    public int getMaxWater() { return this.maxWater; }
+    public void setMaxWater(int amount) { this.maxWater = amount; } // мб у некоторых животных будет другое кол-во макс воды эфф
 
     public void setBiome(int biome) {
         this.biome = biome;
