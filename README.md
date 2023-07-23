@@ -33,7 +33,7 @@ Releases of the server you can get from [here](https://github.com/YesdXploiter/m
 4. Target .jar will be in server/mope/target, named mopelegacyserver.jar
 5. Now you can start the server!
 
-## Command Line Usage
+## Starting
 To run Mope Legacy from the command line without a GUI, enter  
 `java -jar mopelegacyserver.jar <options>`.
 
