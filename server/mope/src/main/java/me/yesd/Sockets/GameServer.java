@@ -29,6 +29,7 @@ public class GameServer extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        room.getClient(conn).onClose();
         room.removeClient(conn);
         System.out.println("deacc");
     }

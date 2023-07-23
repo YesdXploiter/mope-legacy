@@ -118,6 +118,13 @@ public class GameClient {
         removeList.put(object, killer);
     }
 
+    public void onClose() {
+        if (this.getPlayer() != null) {
+            this.room.removeObj(this.getPlayer(), null);
+            this.player = null;
+        }
+    }
+
     public int getNextXP() {
         return Tier.byOrdinal(this.getPlayer().getInfo().getTier()).getUpgradeXP();
     }

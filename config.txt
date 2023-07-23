@@ -1,0 +1,5 @@
+#Sun Jul 23 15:26:19 MUT 2023
+startTier=1
+max_players=500
+serverPort=2255
+gameMode=0
