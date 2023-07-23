@@ -104,6 +104,10 @@ public class GameObject {
         this.angle += angle;
     }
 
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
     public void addAccelerationTowards(double targetX, double targetY, double force) {
         double dx = targetX - this.x;
         double dy = targetY - this.y;

@@ -1,5 +1,6 @@
 package me.yesd.World.Objects.Animals;
 
+import me.yesd.Constants;
 import me.yesd.Sockets.FlagWriter;
 import me.yesd.Sockets.MsgWriter;
 import me.yesd.World.Objects.GameObject;
@@ -116,7 +117,7 @@ public class Animal extends GameObject {
         Pointer mouse = this.getClient().getMouse();
 
         movement();
-        rotateTowards(mouse.x, mouse.y, 50);
+        rotateTowards(mouse.x, mouse.y);
 
         if (this.health > this.maxHealth)
             this.health = this.maxHealth;
@@ -124,14 +125,41 @@ public class Animal extends GameObject {
 
     protected int speed = 5;
 
-    public void rotateTowards(double targetX, double targetY, double lerpFactor) {
-        double dx = targetX - this.getX();
-        double dy = targetY - this.getY();
+    public void rotateTowards(double targetX, double targetY) {
+        double playerX = this.getX(); // player x position
+        double playerY = this.getY(); // player y position
+        double rotationSpeed = Constants.DEFAULTANGLESPEED;
+        double maxRotationSpeed = Constants.MAXROTSPEED * rotationSpeed;
 
-        double targetAngle = Math.atan2(dy, dx);
+        // Calculate the target angle
+        double targetAngle = Math.atan2(targetY - playerY, targetX - playerX) * 180 / Math.PI;
 
-        double diff = (targetAngle - this.getAngle() + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
-        this.addAngle(diff * lerpFactor);
+        // Adjust for game's coordinate system
+        targetAngle = (targetAngle + 270) % 360;
+
+        double currentAngle = (this.getAngle() + 360) % 360;
+
+        // Calculate the difference in angle
+        double diff = targetAngle - currentAngle;
+        if (diff > 180) {
+            diff -= 360;
+        } else if (diff < -180) {
+            diff += 360;
+        }
+
+        // Determine the rotation speed
+        if (Math.abs(diff) > Constants.MIN_DELTA_ANGLE) {
+            rotationSpeed += Constants.ROTATION_ACCELERATION * Math.abs(diff);
+            rotationSpeed = Math.min(rotationSpeed, maxRotationSpeed);
+        }
+
+        // Limit the rotation speed
+        if (Math.abs(diff) > rotationSpeed) {
+            diff = rotationSpeed * Math.signum(diff);
+        }
+
+        // Add the diff to the current angle
+        this.setAngle(currentAngle + diff);
     }
 
     private void movement() {
