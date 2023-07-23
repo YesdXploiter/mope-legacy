@@ -8475,15 +8475,28 @@ GameObj.prototype.moveUpdate = function () {
 
   this.rad += (this.nRad - this.rad) * 0.1; //a * (this.nRad - this.oRad) + this.oRad;;
   if (this.angle != undefined) {
-    //ease angle rot
-    //var idealA = this.angle + this.angleDelta
-    //var oldA =
-    //this.angle = a * (this.angleDelta) + this.oAngle; //(9 * this.angle + idealA) / 10.0;
-    var dChange = this.angleDelta * 0.1; //* a;
-    this.angleDelta -= dChange;
-    this.angle += dChange;
-    //new accurate interpolation
-    //this.angle=this.oAngle+this.angleDelta*a;
+    let lerpRate = 0.1;
+    let diff = this.tangle - this.angle;
+
+    // Adjust diff to be within the range [-Math.PI, Math.PI]
+    while (diff < -Math.PI) diff += 2 * Math.PI;
+    while (diff > Math.PI) diff -= 2 * Math.PI;
+
+    // Interpolate the angle
+    this.angle += diff * lerpRate;
+
+    // Keep the angle within -pi to pi
+    while (this.angle > Math.PI) this.angle -= 2 * Math.PI;
+    while (this.angle < -Math.PI) this.angle += 2 * Math.PI;
+    // //ease angle rot
+    // //var idealA = this.angle + this.angleDelta
+    // //var oldA =
+    // //this.angle = a * (this.angleDelta) + this.oAngle; //(9 * this.angle + idealA) / 10.0;
+    // var dChange = this.angleDelta * 0.1; //* a;
+    // this.angleDelta -= dChange;
+    // this.angle += dChange;
+    // //new accurate interpolation
+    // //this.angle=this.oAngle+this.angleDelta*a;
   }
   return Math.min(1.0, a); //re-use move factor
 };
@@ -8613,7 +8626,7 @@ GameObj.prototype.worldUpd_readMsgNewlyVisible = function (
     var angleDeg = msg.readUInt16();
     //console.log("angle: " + angleDeg/3)  //heree
     var angleCorrection = this.oType == o_abilityGObj ? 180 : 90;
-    this.angle = toRadians(angleDeg + angleCorrection);
+    this.tangle = toRadians(angleDeg + angleCorrection);
     //this.specType = msg.readUInt8();
   }
 
@@ -8667,7 +8680,7 @@ GameObj.prototype.worldUpd_readMsgUpdate = function (msg) {
   if (this.objGetsAngleUpdate) {
     var angleDeg = msg.readUInt16();
     var angleCorrection = this.oType == o_abilityGObj ? 180 : 90;
-    this.angle = toRadians(angleDeg + angleCorrection);
+    this.tangle = toRadians(angleDeg + angleCorrection);
     //console.log("angle1: " + angleDeg)
     // this.specType = msg.readUInt8();
   }

@@ -19,7 +19,7 @@ public class GameObject {
     public boolean isCircle = true;
     public boolean isRectangle = false;
     public boolean updatingAngle = false;
-    private double angle = 0;
+    protected double angle = 0;
     private int species = 0;
     public boolean showHP = false;
     public boolean isHurted = false;
