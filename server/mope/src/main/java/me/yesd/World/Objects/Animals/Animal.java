@@ -92,8 +92,6 @@ public class Animal extends GameObject {
         this.playerName = playerName;
         this.info = info;
         this.setSendsAngle(true);
-        this.showHP = true;
-        this.showWater = true;
     }
 
     public AnimalInfo getInfo() {
