@@ -132,7 +132,7 @@ public class Animal extends GameObject {
         double maxRotationSpeed = Constants.MAXROTSPEED * rotationSpeed;
 
         // Calculate the target angle
-        double targetAngle = Math.atan2(targetY - playerY, targetX - playerX)*(180 / Math.PI);  
+        double targetAngle = Math.atan2(targetY - playerY, targetX - playerX) * (180 / Math.PI);
 
         // Adjust for game's coordinate system
         targetAngle = (targetAngle + 180) % 360;
