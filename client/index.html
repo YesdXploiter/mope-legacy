@@ -4,33 +4,36 @@
   body {
     background-color: #3FBA54;
   }
+
   hr {
     height: 1px;
     border: 0px;
     background: #ffffff;
   }
 </style>
+
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<title>mope.io</title>
-	<link rel="canonical" href="http://mope.io" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<meta name="description" content="Survive and climb the food chain in mopeio, the hit browser game!">
-<meta name="keywords" content="mope, mope.io, mopeio,io games, .io, spaceships, browser game, html game, html5 game, agario, diepio, flash game, space, multiplayer">
-<meta name="google-site-verification" content="HjdDaF_uw12IxXRm3hOS03tqv9QW8Lj5b74mlJGsRz0"/>
-<meta property="og:image" content="img/share_banner.jpg">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="1263">
-<meta property="og:image:height" content="707">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="robots" content="index, follow">
-<meta name="revisit-after" content="3 days">
-<meta name="googlebot" content="all">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="main-v-1.224.css"/>
-<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
-<script data-cfasync="false" type="text/javascript">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>mope.io</title>
+  <link rel="canonical" href="http://mope.io" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Survive and climb the food chain in mopeio, the hit browser game!">
+  <meta name="keywords"
+    content="mope, mope.io, mopeio,io games, .io, spaceships, browser game, html game, html5 game, agario, diepio, flash game, space, multiplayer">
+  <meta name="google-site-verification" content="HjdDaF_uw12IxXRm3hOS03tqv9QW8Lj5b74mlJGsRz0" />
+  <meta property="og:image" content="img/share_banner.jpg">
+  <meta property="og:image:type" content="image/jpg">
+  <meta property="og:image:width" content="1263">
+  <meta property="og:image:height" content="707">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="index, follow">
+  <meta name="revisit-after" content="3 days">
+  <meta name="googlebot" content="all">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="main.css" />
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+  <script data-cfasync="false" type="text/javascript">
     //ONLY LOAD AD SCRIPTS IF NOT MOBILE APP
     function getQueryParams(qs) {
       qs = qs.split("+").join(" ");
@@ -83,36 +86,37 @@
       console.log("Mobile App, not loading browser ads scripts.");
     }
   </script>
-<script src="adblockdet/ads.js"></script>
+  <script src="adblockdet/ads.js"></script>
 </head>
+
 <body>
-<div id="gameAreaWrapper">
-<input id="chatinput" type="text" class="chat-input" placeholder="Chat here..." maxlength="35"/>
-<canvas tabindex="1" id="gCanvas"></canvas>
-</div>
-<div id="connecting" style="height:170px;">
-<div style="height:100px;width:100px;margin: 0 auto;">
-<img class="conimg" src="skins/mouse.png" width="100px"/>
-</div>
-<p>Connecting...</p>
-<p id="txtServer" style="font-size:16px;">
-</p>
-</div>
-<div id="preroll" class="vidAd"></div>
-<div id="pvVidContainer" class="vidAd" style="width:640px;height:360px; display:none;">
-</div>
-<div>
-<div id="my-content-2" style="display:none; visibility:hidden;">
-</div>
-</div>
-<div id="startMenuWrapper">
-<div id="updates">
-<div id="updatesDiv">
-<h2>July 12: Launch of Mope3!</h2>
-<ul>
-<li>Made by W5B with Love!</li>
-</ul>
-<!-- <h2>May 29: bug fixes.</h2>
+  <div id="gameAreaWrapper">
+    <input id="chatinput" type="text" class="chat-input" placeholder="Chat here..." maxlength="35" />
+    <canvas tabindex="1" id="gCanvas"></canvas>
+  </div>
+  <div id="connecting" style="height:170px;">
+    <div style="height:100px;width:100px;margin: 0 auto;">
+      <img class="conimg" src="skins/mouse.png" width="100px" />
+    </div>
+    <p>Connecting...</p>
+    <p id="txtServer" style="font-size:16px;">
+    </p>
+  </div>
+  <div id="preroll" class="vidAd"></div>
+  <div id="pvVidContainer" class="vidAd" style="width:640px;height:360px; display:none;">
+  </div>
+  <div>
+    <div id="my-content-2" style="display:none; visibility:hidden;">
+    </div>
+  </div>
+  <div id="startMenuWrapper">
+    <div id="updates">
+      <div id="updatesDiv">
+        <h2>July 12: Launch of Mope3!</h2>
+        <ul>
+          <li>Made by W5B with Love!</li>
+        </ul>
+        <!-- <h2>May 29: bug fixes.</h2>
 <ul>
 <li>-Fixed 22m xp bug</li>
 </ul>
@@ -248,8 +252,8 @@ animals still.
 <li> - Pelican promoted to tier 10
 </li>
 </ul> -->
-</div>
-<!-- <div id="ytDiv">
+      </div>
+      <!-- <div id="ytDiv">
 <h2>
 Tell us your ideas/bugs on reddit:<br/>
 <a href="https://www.reddit.com/r/mopeio/" target="_blank">REDDIT PAGE</a>
@@ -268,84 +272,87 @@ Try upcoming updates on the beta:<br/>
 <div class="g-ytsubscribe" data-channelid="UCNfK9bZk3Br2KDjXXdKuM1g" data-layout="default" data-theme="dark" data-count="default"></div>
 </div>
 </div> -->
-</div>
-<div id="startMenu">
-<div id="mopeMenu">
-<img id="logo" src="img/logo.png"/>
-<div id="onconnectDiv" style="visibility:hidden;">
-<br/>
-<div class="optionsBtn">
-<button id="settingsButton" class="button" type="submit" style="background-color:transparent; border-color:transparent;">
-<img src="img/settings.png" width="30" height="30"/>
-</button>
-</div>
-<div id="nickInputContainer" style="display: block;">
-<input id="nickInput" autofocus placeholder="Your name" maxlength="15" style="width: 100%; height: 40px; line-height: 36px;">
-</div>
-<a>
-<button id="startButton">Play</button>
-</a>
-<p id="spawnXpLabel">
-</p>
-<p id="serverResponse">
-</p>
-</div>
-<div id="optionsDiv">
-<button id="closeBut" type="submit" class="button" style="background-color:transparent; border-color:transparent;">
-<img src="img/x.png" width="35" height="35"/>
-</button>
-<h3>Region/Server:</h3>
-<select id="regionSelect">
-<option>
-Finding Best Region...
-</option>
-</select>
-<select id="serverSelect">
-<option>
-Finding Server...
-</option>
-</select>
-<h3>Options:</h3>
-<div id="optionsContainer">
-</div>
-<br/>
-<a>
-<button id="btnSpectate" style="display:block">Spectate</button>
-</a>
-</div>
-<div id="moneyRectWrap">
-<div id="moneyRect">
-<div id="cdm-zone-02"></div>
-</div>
-</div>
-</div>
-</div>
-<div id="rightSide">
-<div id="appsDiv">
-<a id="appAdIOS" href="https://goo.gl/ofAUPJ" target="_blank">
-<img src="img/appAd_ios.png" width="132" height="82" alt="GET THE IOS APP!"/>
-</a>
-<a id="appAdAndroid" href="https://goo.gl/i3xQWQ" target="_blank">
-<img src="img/appAd_and.png" width="132" height="52" alt="GET THE Android APP!"/>
-</a>
-</div>
-</div>
-<div id="moneyRectBottomWrap">
-<div id="moneyRectBottom">
-<div align="center" id="mope_970x90_728x90_bottom">
-<script data-cfasync="false" type="text/javascript">
+    </div>
+    <div id="startMenu">
+      <div id="mopeMenu">
+        <img id="logo" src="img/logo.png" />
+        <div id="onconnectDiv" style="visibility:hidden;">
+          <br />
+          <div class="optionsBtn">
+            <button id="settingsButton" class="button" type="submit"
+              style="background-color:transparent; border-color:transparent;">
+              <img src="img/settings.png" width="30" height="30" />
+            </button>
+          </div>
+          <div id="nickInputContainer" style="display: block;">
+            <input id="nickInput" autofocus placeholder="Your name" maxlength="15"
+              style="width: 100%; height: 40px; line-height: 36px;">
+          </div>
+          <a>
+            <button id="startButton">Play</button>
+          </a>
+          <p id="spawnXpLabel">
+          </p>
+          <p id="serverResponse">
+          </p>
+        </div>
+        <div id="optionsDiv">
+          <button id="closeBut" type="submit" class="button"
+            style="background-color:transparent; border-color:transparent;">
+            <img src="img/x.png" width="35" height="35" />
+          </button>
+          <h3>Region/Server:</h3>
+          <select id="regionSelect">
+            <option>
+              Finding Best Region...
+            </option>
+          </select>
+          <select id="serverSelect">
+            <option>
+              Finding Server...
+            </option>
+          </select>
+          <h3>Options:</h3>
+          <div id="optionsContainer">
+          </div>
+          <br />
+          <a>
+            <button id="btnSpectate" style="display:block">Spectate</button>
+          </a>
+        </div>
+        <div id="moneyRectWrap">
+          <div id="moneyRect">
+            <div id="cdm-zone-02"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="rightSide">
+      <div id="appsDiv">
+        <a id="appAdIOS" href="https://goo.gl/ofAUPJ" target="_blank">
+          <img src="img/appAd_ios.png" width="132" height="82" alt="GET THE IOS APP!" />
+        </a>
+        <a id="appAdAndroid" href="https://goo.gl/i3xQWQ" target="_blank">
+          <img src="img/appAd_and.png" width="132" height="52" alt="GET THE Android APP!" />
+        </a>
+      </div>
+    </div>
+    <div id="moneyRectBottomWrap">
+      <div id="moneyRectBottom">
+        <div align="center" id="mope_970x90_728x90_bottom">
+          <script data-cfasync="false" type="text/javascript">
             /*if (!isMobileApp) {
               freestar.queue.push(function() {
                 googletag.display('mope_970x90_728x90_bottom');
               });
             }*/
           </script>
-</div>
-<div id="cdm-zone-01"></div>
-</div>
-</div>
-</div>
-<script>
+        </div>
+        <div id="cdm-zone-01"></div>
+      </div>
+    </div>
+  </div>
+  <script>
     var script = document.createElement('script');
     script.id = 'mopejs';
     script.src = 'client.js?x=' + (+new Date());
@@ -362,5 +369,6 @@ Finding Server...
     }
     //document.write("<script src='client.js?x=" + (+new Date()) + "'></" + "script>");
   </script>
-<div id="cdm-zone-end"></div>
+  <div id="cdm-zone-end"></div>
+
 </html>
