@@ -405,3 +405,4 @@ FodyWeavers.xsd
 # Build temp files
 /server/mope/target/**
 /server/mope/target/
+/config.txt
