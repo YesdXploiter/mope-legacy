@@ -1,8 +1,6 @@
 package me.yesd.World.Objects.Animals;
 
 import java.util.Date;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import me.yesd.Constants;
 import me.yesd.Sockets.FlagWriter;
@@ -88,6 +86,9 @@ public class Animal extends GameObject {
 
     public String playerName;
 
+    protected long godmode_time;
+    protected boolean godMode = false;
+
     public Animal(int id, double x, double y, AnimalInfo info, String playerName, GameClient client) {
         super(id, x, y, Tier.byOrdinal(info.getTier()).getBaseRadius(), 2);
 
@@ -96,6 +97,8 @@ public class Animal extends GameObject {
         this.playerName = playerName;
         this.info = info;
         this.setSendsAngle(true);
+        this.godMode = true;
+        this.godmode_time = new Date().getTime() + 3000;
     }
 
     public AnimalInfo getInfo() {
@@ -125,13 +128,15 @@ public class Animal extends GameObject {
 
         if (this.health > this.maxHealth)
             this.health = this.maxHealth;
-            long godmode_time = new Date().getTime() + 3000;
-            if(godmode_time > new Date().getTime()) {
+
+        if (godMode) {
+            if (godmode_time > new Date().getTime()) {
                 this.flag_eff_invincible = true;
-            }
-            else {
+            } else {
                 this.flag_eff_invincible = false;
-                }
+                godMode = false;
+            }
+        }
 
     }
 
@@ -165,7 +170,7 @@ public class Animal extends GameObject {
         newAngle = (newAngle + 360) % 360;
 
         // Set the new angle
-        this.addAngle(newAngle-this.getAngle());
+        this.addAngle(newAngle - this.getAngle());
     }
 
     private void movement() {
