@@ -406,3 +406,5 @@ FodyWeavers.xsd
 /server/mope/target/**
 /server/mope/target/
 /config.txt
+.vscode/launch.json
+.vscode/settings.json

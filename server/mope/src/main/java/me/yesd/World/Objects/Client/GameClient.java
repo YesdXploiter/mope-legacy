@@ -49,7 +49,8 @@ public class GameClient {
     public GameClient(WebSocket socket, Room room) {
         this.room = room;
         this.socket = socket;
-        this.camera = new Camera(0, 0);
+        this.camera = new Camera(Utilities.randomInt(0, Constants.WIDTH - 1),
+                Utilities.randomInt(0, Constants.HEIGHT - 1));
         this.mouse = new Pointer(0, 0);
     }
 
@@ -360,6 +361,10 @@ public class GameClient {
     }
 
     public void updateView() {
+        if (this.isAlive())
+            this.camera.setZoom((int) Math.floor(Tier.byOrdinal(this.tier).getBaseZoom() * 1000));
+        else
+            this.camera.setZoom(1000);
         double wVisible = Math.abs(3700 - (this.camera.zoom)) / 10;
         double hVisible = Math.abs(3700 - (this.camera.zoom)) / 10;
 
@@ -415,8 +420,7 @@ public class GameClient {
             this.camera.setX((int) this.player.getX());
             this.camera.setY((int) this.player.getY());
         } else {
-            this.camera.addX(1);
-            this.camera.addY(1);
+            this.camera.updateBounce();
         }
         if (this.joined) {
             this.send(WorldUpdate.create(this, this.room));
