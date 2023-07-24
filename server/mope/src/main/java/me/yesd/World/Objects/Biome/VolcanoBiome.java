@@ -9,7 +9,7 @@ public class VolcanoBiome extends GameObject {
 
     public VolcanoBiome(int id, double x, double y, int radius, Room room, int spawnid) {
         super(id, x, y, radius, 47);
-        this.setBiome(BiomeType.DESERT.ordinal());
+        this.setBiome(BiomeType.VOLCANO.ordinal());
         this.room = room;
     }
 }
