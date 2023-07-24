@@ -6,10 +6,10 @@ Mope Legacy is an open-source project that serves as a server (also contains a c
 
 ## Features
 
-* Fast
-* Under active development
-* Easy to setup
-* Open source
+* Fast.
+* Under active development.
+* Easy to setup.
+* Open source.
 
 ## Usage requirements
 
@@ -27,10 +27,10 @@ Releases of the server you can get from [here](https://github.com/YesdXploiter/m
 
 ## Building
 
-1. Clone project
-2. Open your CLI with Maven installed in server/mope directory
-3. Build the server with `mvn clean package`
-4. Target .jar will be in server/mope/target, named mopelegacyserver.jar
+1. Clone project.
+2. Open your CLI with Maven installed in server/mope directory.
+3. Build the server with `mvn clean package`.
+4. Target .jar will be in server/mope/target, named mopelegacyserver.jar.
 5. Now you can start the server!
 
 ## Starting
@@ -43,4 +43,4 @@ To run Mope Legacy from the command line without a GUI, enter
 * [ProXYGamer1](https://github.com/ProXYGamer1)
 
 ## Special Thanks
-* [PashaGames](https://github.com/pashagamesold) - Did a lot of work on creating the basis of the server
+* [PashaGames](https://github.com/pashagamesold) - Did a lot of work on creating the basis of the server.
