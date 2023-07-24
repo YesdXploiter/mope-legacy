@@ -92,7 +92,7 @@ public class Animal extends GameObject {
     public Animal(int id, double x, double y, AnimalInfo info, String playerName, GameClient client) {
         super(id, x, y, Tier.byOrdinal(info.getTier()).getBaseRadius(), 2);
 
-        this.bar = new Bar(0);
+        this.bar = new Bar(0, 100);
         this.client = client;
         this.playerName = playerName;
         this.info = info;
