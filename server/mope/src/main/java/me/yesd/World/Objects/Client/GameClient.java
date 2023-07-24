@@ -1,8 +1,11 @@
 package me.yesd.World.Objects.Client;
 
 import java.lang.reflect.Constructor;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.java_websocket.WebSocket;
 
@@ -194,6 +197,7 @@ public class GameClient {
             this.room.addObj(this.player);
 
             this.alive = true;
+
             this.send(Network.createSelection(this, 5, 0, 0, null));
             this.send(Network.changeAnimal(this.player, 1));
             this.inUpgrade = false;
