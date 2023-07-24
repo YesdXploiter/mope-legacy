@@ -16,12 +16,13 @@ public class Constants {
         public static final int OCEANH = 4800;
         public static final int FORESTW = 1400;
         public static final int FORESTH = 1400;
+        public static final int BEACHW = 150;
         public static final int PORT = Utilities.toInt(conf.GetProp("serverPort", "2255"));
         public static final int GAMEMODE = Utilities.toInt(conf.GetProp("gameMode", "0"));
         public static final int MAX_PLAYERS = Utilities.toInt(conf.GetProp("max_players", "500"));
         public static final int TICKS_PER_SECOND = 20;
         public static final int VERSION = 1;
         public static final int STARTING_TIER = Utilities.toInt(conf.GetProp("startTier", "1"));
-        public static final double SMOOTHNESS = 0.25;
+        public static final double SMOOTHNESS = 0.35;
         public static final double RADIUS_NORMALIZATION_FACTOR = 55;
 }

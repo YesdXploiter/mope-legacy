@@ -15,6 +15,7 @@ import me.yesd.Utilities.Utilities;
 import me.yesd.World.Objects.GameObject;
 import me.yesd.World.Objects.Biome.Arctic;
 import me.yesd.World.Objects.Biome.Land;
+import me.yesd.World.Objects.Biome.Beach;
 import me.yesd.World.Objects.Biome.Ocean;
 import me.yesd.World.Objects.Biome.VolcanoBiome;
 import me.yesd.World.Objects.Client.GameClient;
@@ -32,6 +33,7 @@ public class Room extends Thread {
     private Arctic arctic;
 
     private Land land;
+    private Beach beach1;
 
     private VolcanoBiome volcanoBiome;
 
@@ -129,6 +131,11 @@ public class Room extends Thread {
                 Constants.ARCTICH / 2, Constants.ARCTICW,
                 Constants.ARCTICH, this);
         this.addObj(arctic);
+        //int id, double x, double y, double width, double height, Room room, int direction
+    this.beach1 = new Beach(this.getID(), Constants.OCEANW + Constants.BEACHW / 2,
+     Constants.HEIGHT / 2 + Constants.ARCTICH / 2,
+     Constants.BEACHW,Constants.HEIGHT - Constants.ARCTICH,this, 1);
+    this.addObj(beach1);
 
         this.land = new Land(this.getID(), Constants.WIDTH / 2, Constants.HEIGHT / 2,
                 Constants.LANDW, Constants.LANDH,
