@@ -147,6 +147,11 @@ public class Animal extends GameObject {
         double playerY = this.getY(); // player y position
         double smoothness = Constants.SMOOTHNESS; // smoothness of rotation
 
+        // Add dependency on radius
+        double radius = this.getRadius();
+        double radiusFactor = Math.max(1, radius / Constants.RADIUS_NORMALIZATION_FACTOR);
+        smoothness /= radiusFactor;
+
         // Calculate the target angle
         double targetAngle = Math.atan2(targetY - playerY, targetX - playerX) * (180 / Math.PI);
 

@@ -22,9 +22,6 @@ public class Constants {
         public static final int TICKS_PER_SECOND = 20;
         public static final int VERSION = 1;
         public static final int STARTING_TIER = Utilities.toInt(conf.GetProp("startTier", "1"));
-        public static final double MIN_DELTA_ANGLE = 5;
-        public static final double ROTATION_ACCELERATION = 16;
-        public static final double DEFAULTANGLESPEED = 0.2;
-        public static final double MAXROTSPEED = 65;
-        public static final double SMOOTHNESS = 0.4;
+        public static final double SMOOTHNESS = 0.25;
+        public static final double RADIUS_NORMALIZATION_FACTOR = 55;
 }

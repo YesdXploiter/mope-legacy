@@ -1,5 +1,6 @@
 var gamever = 1;
 var KTestingModeON = true;
+var disableInterpolate = true, angleLerpRate = 0.21;
 var KTestingBetaMode = true && !KTestingModeON;
 console.log("\n\n\n");
 console.log(
@@ -8475,28 +8476,16 @@ GameObj.prototype.moveUpdate = function () {
 
   this.rad += (this.nRad - this.rad) * 0.1; //a * (this.nRad - this.oRad) + this.oRad;;
   if (this.angle != undefined) {
-    let lerpRate = 0.1;
-    let diff = this.tangle - this.angle;
-
-    // Adjust diff to be within the range [-Math.PI, Math.PI]
-    while (diff < -Math.PI) diff += 2 * Math.PI;
-    while (diff > Math.PI) diff -= 2 * Math.PI;
-
-    // Interpolate the angle
-    this.angle += diff * lerpRate;
-
-    // Keep the angle within -pi to pi
-    while (this.angle > Math.PI) this.angle -= 2 * Math.PI;
-    while (this.angle < -Math.PI) this.angle += 2 * Math.PI;
-    // //ease angle rot
-    // //var idealA = this.angle + this.angleDelta
-    // //var oldA =
-    // //this.angle = a * (this.angleDelta) + this.oAngle; //(9 * this.angle + idealA) / 10.0;
-    // var dChange = this.angleDelta * 0.1; //* a;
-    // this.angleDelta -= dChange;
-    // this.angle += dChange;
-    // //new accurate interpolation
-    // //this.angle=this.oAngle+this.angleDelta*a;
+    if (!disableInterpolate) {
+      let diff = this.tangle - this.angle;
+      while (diff < -Math.PI) diff += 2 * Math.PI;
+      while (diff > Math.PI) diff -= 2 * Math.PI;
+      this.angle += diff * angleLerpRate;
+      while (this.angle > Math.PI) this.angle -= 2 * Math.PI;
+      while (this.angle < -Math.PI) this.angle += 2 * Math.PI;
+    } else {
+      this.angle = this.tangle;
+    }
   }
   return Math.min(1.0, a); //re-use move factor
 };
