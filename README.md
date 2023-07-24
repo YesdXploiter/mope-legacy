@@ -41,3 +41,6 @@ To run Mope Legacy from the command line without a GUI, enter
 * [YesdXploiter](https://github.com/YesdXploiter)
 * [RussianMopeRU](https://github.com/RussianMopeRU)
 * [ProXYGamer1](https://github.com/ProXYGamer1)
+
+## Special Thanks
+* [PashaGames](https://github.com/pashagamesold) - Did a lot of work on creating the basis of the server
