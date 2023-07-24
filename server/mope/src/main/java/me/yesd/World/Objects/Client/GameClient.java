@@ -52,6 +52,7 @@ public class GameClient {
         this.camera = new Camera(Utilities.randomInt(0, Constants.WIDTH - 1),
                 Utilities.randomInt(0, Constants.HEIGHT - 1));
         this.mouse = new Pointer(0, 0);
+        this.developer = 2;
     }
 
     public void handlePing() {
@@ -103,6 +104,36 @@ public class GameClient {
                     break;
                 }
 
+                case UPGRADE: {
+                    if (this.isDeveloper()) {
+                        if (this.getPlayer() != null) {
+                            if (this.tier < 17)
+                                this.tier++;
+                            else
+                                this.tier = 1;
+                            this.setXP(Tier.byOrdinal(this.tier).getStartXP());
+                            this.send(Network.createSelection(this, 0, 15, this.tier,
+                                    Tier.byOrdinal(this.tier).getAnimalInfo()));
+                        }
+                    }
+                    break;
+                }
+
+                case DOWNGRADE: {
+                    if (this.isDeveloper()) {
+                        if (this.getPlayer() != null) {
+                            if (this.tier > 1)
+                                this.tier--;
+                            else
+                                this.tier = 17;
+                            this.setXP(Tier.byOrdinal(this.tier).getStartXP());
+                            this.send(Network.createSelection(this, 0, 15, this.tier,
+                                    Tier.byOrdinal(this.tier).getAnimalInfo()));
+                        }
+                    }
+                    break;
+                }
+
                 default:
                     break;
             }
@@ -110,6 +141,10 @@ public class GameClient {
             e.printStackTrace();
             this.sendDisconnect("MOPERR_000");
         }
+    }
+
+    private void setXP(int newXP) {
+        xp = newXP;
     }
 
     public void hideFromView(GameObject object, GameObject killer) {
@@ -185,7 +220,7 @@ public class GameClient {
                 newy = bounds[2];
             }
 
-            this.player = createAnimal(info, new double[] { newx, newy });
+            this.player = createAnimal(info, new double[] { newx, newy, newx, newy });
             this.room.addObj(this.player);
 
             this.send(Network.createSelection(this, 5, 0, 0, null));
@@ -196,7 +231,6 @@ public class GameClient {
 
     private double[] getBounds(AnimalInfo info) {
         GameObject biome = this.room.getBiomeByID(info.getBiome(), this.player);
-        System.out.println("A: " + info.getBiome());
         double[] bounds = new double[4];
         double radius = Tier.byOrdinal(info.getTier()).getBaseRadius() * 2;
         if (biome instanceof Biome) {
@@ -227,8 +261,12 @@ public class GameClient {
                 e.printStackTrace();
             }
         } else {
-            animal = new Animal(this.room.getID(), Utilities.randomDouble(bounds[0], bounds[1]),
-                    Utilities.randomDouble(bounds[2], bounds[3]), info, this.playerName, this);
+            double x = bounds[0] < bounds[1] ? Utilities.randomDouble(bounds[0], bounds[1])
+                    : Utilities.randomDouble(bounds[1], bounds[0]);
+            double y = bounds[2] < bounds[3] ? Utilities.randomDouble(bounds[2], bounds[3])
+                    : Utilities.randomDouble(bounds[3], bounds[2]);
+
+            animal = new Animal(this.room.getID(), x, y, info, this.playerName, this);
         }
         return animal;
     }
@@ -310,8 +348,9 @@ public class GameClient {
     }
 
     public int getXPPercentage() {
-        return ((this.xp - Tier.byOrdinal(this.tier).getStartXP())
-                / (Tier.byOrdinal(this.tier).getUpgradeXP() - Tier.byOrdinal(this.tier).getStartXP())) * 100;
+        return (int) Math.floor(
+                Utilities.calculatePercentage(xp, Tier.byOrdinal(this.getPlayer().getInfo().getTier()).getStartXP(),
+                        Tier.byOrdinal(this.getPlayer().getInfo().getTier()).getUpgradeXP()));
     }
 
     public void handleFirstConnect(MsgReader reader) {

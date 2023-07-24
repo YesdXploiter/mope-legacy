@@ -3567,7 +3567,7 @@ function drawScreenText() {
     var tString = tLeftS > 0 ? " (auto in " + Math.trunc(tLeftS) + "s)" : ""; //round to 1 dec
     ctx.fillText(
       aniChoice_joinGameAfter
-        ? "Choose which animal to spawn as:"
+        ? "Choose which animal to spawn as:" + tString
         : "Choose an upgrade:" + tString,
       canvasW / 2,
       yTop - 25 * pixelRat

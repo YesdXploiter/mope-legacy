@@ -375,8 +375,6 @@ public class Network {
                 writer.writeUInt8(info.getAnimalType());
                 writer.writeUInt8(info.getBiome());
                 writer.writeUInt8(info.getAnimalSpecies());
-                writer.writeUInt8(info.getAnimalSubSpecies()); // subspecies
-                writer.writeUInt8(info.getAnimalSpecies() > 0 && !info.isRare() ? 1 : 0);
             }
         } else {
             client.setInUpgrade(false);

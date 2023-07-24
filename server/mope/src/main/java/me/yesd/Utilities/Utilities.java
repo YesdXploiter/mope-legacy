@@ -70,11 +70,17 @@ public class Utilities {
     }
 
     public static double calculatePercentage(double currentValue, double minValue, double maxValue) {
-        if (currentValue < minValue || currentValue > maxValue) {
+        if (currentValue < minValue) {
             return 0;
         }
+
+        if (currentValue > maxValue) {
+            return 100;
+        }
+
         double range = maxValue - minValue;
         double valueFromMin = currentValue - minValue;
+
         return (valueFromMin / range) * 100.0;
     }
 
