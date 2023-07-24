@@ -13,7 +13,7 @@ Mope Legacy is an open-source project that serves as a server (also contains a c
 
 ## Usage requirements
 
-* Java 19+
+* Java 17+
 
 ## Get a release
 
@@ -21,8 +21,8 @@ Releases of the server you can get from [here](https://github.com/YesdXploiter/m
 
 ## Building requirements
 
-* Java 19+
-* JDK 19+
+* Java 17+
+* JDK 17+
 * Maven
 
 ## Building
@@ -36,10 +36,6 @@ Releases of the server you can get from [here](https://github.com/YesdXploiter/m
 ## Starting
 To run Mope Legacy from the command line without a GUI, enter  
 `java -jar mopelegacyserver.jar <options>`.
-
-## Dependencies
-
-* Java 19
 
 ## Contributors
 * [YesdXploiter](https://github.com/YesdXploiter)
