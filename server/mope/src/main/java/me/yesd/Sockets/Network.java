@@ -444,9 +444,9 @@ public class Network {
         if (tier > 0)
             edibleObjTypes += 3;
         if (tier >= 2)
-            edibleObjTypes += 2;
+            edibleObjTypes += 1;
         if (tier >= 3)
-            edibleObjTypes += 4;
+            edibleObjTypes += 3;
         if (tier >= 4)
             edibleObjTypes += 1;
         if (tier >= 5)
