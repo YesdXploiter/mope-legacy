@@ -1,6 +1,6 @@
 var gamever = 1;
 var KTestingModeON = true;
-var disableInterpolate = true, angleLerpRate = 0.21;
+var disableInterpolate = false, angleLerpRate = 0.1; //var disableInterpolate = true, angleLerpRate = 0.21;
 var KTestingBetaMode = true && !KTestingModeON;
 console.log("\n\n\n");
 console.log(
