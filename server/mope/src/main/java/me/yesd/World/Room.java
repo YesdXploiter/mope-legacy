@@ -12,10 +12,11 @@ import me.yesd.Sockets.MsgWriter;
 import me.yesd.Utilities.GameList;
 import me.yesd.Utilities.MessageType;
 import me.yesd.Utilities.Utilities;
+import me.yesd.World.Collision.Collision;
 import me.yesd.World.Objects.GameObject;
 import me.yesd.World.Objects.Biome.Arctic;
-import me.yesd.World.Objects.Biome.Land;
 import me.yesd.World.Objects.Biome.Beach;
+import me.yesd.World.Objects.Biome.Land;
 import me.yesd.World.Objects.Biome.Ocean;
 import me.yesd.World.Objects.Biome.VolcanoBiome;
 import me.yesd.World.Objects.Client.GameClient;
@@ -43,11 +44,14 @@ public class Room extends Thread {
 
     private Ocean oright;
 
+    private Collision collision;
+
     public Room() {
         this.width = Constants.WIDTH;
         this.height = Constants.HEIGHT;
         this.mode = Constants.GAMEMODE;
         this.objects = new GameList();
+        this.collision = new Collision(this);
     }
 
     public void sendChat(GameClient client, String msg) {
@@ -149,16 +153,18 @@ public class Room extends Thread {
                 Constants.ARCTICH / 2, Constants.ARCTICW,
                 Constants.ARCTICH, this);
         this.addObj(arctic);
-        //int id, double x, double y, double width, double height, Room room, int direction
-    this.beach1 = new Beach(this.getID(), Constants.OCEANW + Constants.BEACHW / 2,
-     Constants.HEIGHT / 2 + Constants.ARCTICH / 2,
-     Constants.BEACHW,Constants.HEIGHT - Constants.ARCTICH,this, 1);
-    this.addObj(beach1);
+        // int id, double x, double y, double width, double height, Room room, int
+        // direction
+        this.beach1 = new Beach(this.getID(), Constants.OCEANW + Constants.BEACHW / 2,
+                Constants.HEIGHT / 2 + Constants.ARCTICH / 2,
+                Constants.BEACHW, Constants.HEIGHT - Constants.ARCTICH, this, 1);
+        this.addObj(beach1);
 
         this.land = new Land(this.getID(), Constants.WIDTH / 2, Constants.HEIGHT / 2,
                 Constants.LANDW, Constants.LANDH,
                 this);
         this.addObj(land);
+        land.spawnHills(200);
 
         this.oleft = new Ocean(this.getID(), Constants.OCEANW / 2, Constants.HEIGHT /
                 2, Constants.OCEANW,
@@ -186,9 +192,7 @@ public class Room extends Thread {
             client.update();
         }
 
-        for (GameObject obj : this.objects) {
-            obj.update();
-        }
+        collision.update();
     }
 
     public void removeObj(GameObject object, GameObject killer) {
@@ -239,7 +243,7 @@ public class Room extends Thread {
             try {
                 this.update();
 
-                Thread.sleep(100);
+                Thread.sleep(1000 / Constants.TICKS_PER_SECOND);
             } catch (Exception e) {
                 e.printStackTrace();
             }

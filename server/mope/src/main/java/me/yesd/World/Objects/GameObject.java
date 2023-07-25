@@ -54,6 +54,16 @@ public class GameObject {
         this.velocityY = velocityY;
     }
 
+    private boolean isMovable = true;
+
+    public boolean isMovable() {
+        return isMovable;
+    }
+
+    public void setMovable(boolean movable) {
+        isMovable = movable;
+    }
+
     public void update() {
         this.velocityX += this.accelerationX;
         this.velocityY += this.accelerationY;
@@ -232,6 +242,11 @@ public class GameObject {
 
     public boolean isCircle() {
         return isCircle;
+    }
+
+    public void setPosition(double x, double y) {
+        setX(x);
+        setY(y);
     }
 
 }

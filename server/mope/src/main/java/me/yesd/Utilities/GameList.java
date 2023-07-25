@@ -1,18 +1,18 @@
 package me.yesd.Utilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import me.yesd.World.Objects.GameObject;
 
 public class GameList implements Iterable<GameObject> {
-    public ConcurrentHashMap<Integer, GameObject> gameMap;
+    public HashMap<Integer, GameObject> gameMap;
 
     public GameList(final GameList copy) {
-        this.gameMap = new ConcurrentHashMap<Integer, GameObject>();
-        this.gameMap = new ConcurrentHashMap<Integer, GameObject>(copy.gameMap);
+        this.gameMap = new HashMap<Integer, GameObject>();
+        this.gameMap = new HashMap<Integer, GameObject>(copy.gameMap);
     }
 
     public List<GameObject> subList(int startIndex, int endIndex) {
@@ -34,7 +34,7 @@ public class GameList implements Iterable<GameObject> {
     }
 
     public GameList() {
-        this.gameMap = new ConcurrentHashMap<Integer, GameObject>();
+        this.gameMap = new HashMap<Integer, GameObject>();
     }
 
     public Object get(final int id) {

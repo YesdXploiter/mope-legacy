@@ -4,8 +4,6 @@ import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.java_websocket.WebSocket;
 
@@ -128,8 +126,7 @@ public class GameClient {
                     String fixMsg = message.substring(0,
                             this.isSuperDeveloper()
                                     ? Math.min(250, message.length())
-                                    : Math.min(35, message.length())
-                    );
+                                    : Math.min(35, message.length()));
 
                     this.room.sendChat(this, fixMsg);
                     break;
@@ -436,8 +433,8 @@ public class GameClient {
             this.camera.setZoom((int) Math.floor(Tier.byOrdinal(this.tier).getBaseZoom() * 1000));
         else
             this.camera.setZoom(1000);
-        double wVisible = Math.abs(3700 - (this.camera.zoom)) / 10;
-        double hVisible = Math.abs(3700 - (this.camera.zoom)) / 10;
+        double wVisible = 800 + Math.abs(3700 - (this.camera.zoom)) / 10;
+        double hVisible = 600 + Math.abs(3700 - (this.camera.zoom)) / 10;
 
         RectangleUtils utils = new RectangleUtils(this.camera.x, this.camera.y, wVisible, hVisible);
 
