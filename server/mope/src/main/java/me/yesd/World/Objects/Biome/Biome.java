@@ -17,6 +17,8 @@ public class Biome extends Rectangle {
         super(id, x, y, width, height, type);
 
         this.setBiome(biome);
+        this.setSolid(false);
+        this.setMovable(false);
         this.room = room;
 
         this.objects = new ArrayList<>();
