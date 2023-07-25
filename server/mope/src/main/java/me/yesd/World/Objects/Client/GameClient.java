@@ -73,7 +73,7 @@ public class GameClient {
                 throw new PacketException();
             }
 
-            System.out.println(messageType + "");
+            if (messageType != MessageType.MOUSEPOS) System.out.println(messageType + "");
 
             switch (messageType) {
                 case FIRSTCONNECT: {
