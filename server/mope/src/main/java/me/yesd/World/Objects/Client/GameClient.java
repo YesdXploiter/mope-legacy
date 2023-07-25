@@ -39,6 +39,8 @@ public class GameClient {
     private boolean inUpgrade;
     private int tier;
     private int inUpgradeTimer;
+
+    private long chatCooldown_time;
     private Animal player;
     private List<AnimalInfo> selectionList;
     private Camera camera;
@@ -104,6 +106,32 @@ public class GameClient {
                     short mouseY = reader.readInt16();
                     this.mouse.setX(mouseX);
                     this.mouse.setY(mouseY);
+                    break;
+                }
+
+                case CHAT: {
+                    if (this.getPlayer() == null)
+                        return;
+
+                    // Player can send messages only every 750 ms.
+                    if (new Date().getTime() - this.chatCooldown_time < 750 && this.chatCooldown_time != 0)
+                        return;
+
+                    this.chatCooldown_time = new Date().getTime();
+
+                    String message = reader.readString();
+
+                    if (message.length() == 0)
+                        return;
+
+                    // If player is a developer, his message can be 250 characters long.
+                    String fixMsg = message.substring(0,
+                            this.isSuperDeveloper()
+                                    ? Math.min(250, message.length())
+                                    : Math.min(35, message.length())
+                    );
+
+                    this.room.sendChat(this, fixMsg);
                     break;
                 }
 
