@@ -145,22 +145,17 @@ public class Utilities {
         return String.format("%dd %dh %dm %ds", day, hour, min, sec);
     }
 
-    public static String encodeURIComponent(String s) {
-        String result = null;
 
+    public static String encodeURIComponent(final String string) {
         try {
-            result = URLEncoder.encode(s, "UTF-8")
-                    .replaceAll("\\+", "%20")
-                    .replaceAll("\\%21", "!")
-                    .replaceAll("\\%27", "'")
-                    .replaceAll("\\%28", "(")
-                    .replaceAll("\\%29", ")")
+            final String encoded = URLEncoder.encode(string, "UTF-8").replaceAll("\\+", "%20").replaceAll("\\%21", "!")
+                    .replaceAll("\\%27", "'").replaceAll("\\%28", "(").replaceAll("\\%29", ")")
                     .replaceAll("\\%7E", "~");
+            return encoded;
         } catch (UnsupportedEncodingException e) {
-            result = s;
+            e.printStackTrace();
+            return null;
         }
-
-        return result;
     }
 
     public static String escape(final String string) {

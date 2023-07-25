@@ -50,6 +50,24 @@ public class Room extends Thread {
         this.objects = new GameList();
     }
 
+    public void sendChat(GameClient client, String msg) {
+        if (client.getPlayer() == null)
+            return;
+
+        GameObject ani = client.getPlayer();
+
+        for (GameClient client1 : clients.values()) {
+            if (client1.getVisibleList().containsKey(ani.getID())) {
+                MsgWriter writer = new MsgWriter();
+                writer.writeType(MessageType.CHAT);
+                writer.writeUInt32(ani.getID());
+                writer.writeString(msg);
+
+                client1.send(writer);
+            }
+        }
+    }
+
     public void addClient(GameClient client) {
         clients.put(client.socket, client);
     }
