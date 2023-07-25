@@ -73,7 +73,8 @@ public class GameClient {
                 throw new PacketException();
             }
 
-            if (messageType != MessageType.MOUSEPOS) System.out.println(messageType + "");
+            if (messageType != MessageType.MOUSEPOS)
+                System.out.println(messageType + "");
 
             switch (messageType) {
                 case FIRSTCONNECT: {
@@ -278,23 +279,20 @@ public class GameClient {
 
     private Animal createAnimal(AnimalInfo info, double[] bounds) {
         Animal animal = null;
+        double x = bounds[0] < bounds[1] ? Utilities.randomDouble(bounds[0], bounds[1])
+                : Utilities.randomDouble(bounds[1], bounds[0]);
+        double y = bounds[2] < bounds[3] ? Utilities.randomDouble(bounds[2], bounds[3])
+                : Utilities.randomDouble(bounds[3], bounds[2]);
         if (info.getType().hasCustomClass()) {
             try {
                 Constructor<Animal> aa = info.getType().getAnimalClass().getConstructor(int.class, double.class,
                         double.class, AnimalInfo.class, String.class, GameClient.class);
-                animal = aa.newInstance(this.room.getID(), Utilities.randomDouble(bounds[0], bounds[1]),
-                        Utilities.randomDouble(bounds[2], bounds[3]),
-                        info, this.playerName, this);
+                animal = aa.newInstance(this.room.getID(), x, y, info, this.playerName, this);
             } catch (Exception e) {
                 this.sendDisconnect("MOPERR_0_1");
                 e.printStackTrace();
             }
         } else {
-            double x = bounds[0] < bounds[1] ? Utilities.randomDouble(bounds[0], bounds[1])
-                    : Utilities.randomDouble(bounds[1], bounds[0]);
-            double y = bounds[2] < bounds[3] ? Utilities.randomDouble(bounds[2], bounds[3])
-                    : Utilities.randomDouble(bounds[3], bounds[2]);
-
             animal = new Animal(this.room.getID(), x, y, info, this.playerName, this);
         }
         return animal;

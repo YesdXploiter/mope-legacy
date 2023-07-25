@@ -1,5 +1,7 @@
 package me.yesd.World.Objects.Animals;
 
+import me.yesd.World.Objects.Animals.Types.Tier17.BlackDragon;
+
 public enum AnimalType {
     NULL(Animal.class),
     MOUSE(Animal.class),
@@ -47,7 +49,7 @@ public enum AnimalType {
     MAMMOTH(Animal.class),
     DONKEY(Animal.class),
     SNAIL(Animal.class),
-    BLACKDRAGON(Animal.class),
+    BLACKDRAGON(BlackDragon.class),
     SABERTOOTHTIGER(Animal.class),
     ELEPHANT(Animal.class),
     BLUEWHALE(Animal.class),
