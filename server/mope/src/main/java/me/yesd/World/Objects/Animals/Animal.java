@@ -169,6 +169,7 @@ public class Animal extends GameObject {
         }
 
         // Use lerp to smoothly rotate towards the target angle
+        //double newAngle = this.getTier() < 10 ? currentAngle + diff : currentAngle + diff * smoothness;
         double newAngle = currentAngle + diff * smoothness;
 
         // Ensure newAngle is within [0, 360)
