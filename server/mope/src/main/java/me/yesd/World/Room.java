@@ -239,7 +239,7 @@ public class Room extends Thread {
             try {
                 this.update();
 
-                Thread.sleep(100);
+                Thread.sleep(1000 / Constants.TICKS_PER_SECOND);
             } catch (Exception e) {
                 e.printStackTrace();
             }
