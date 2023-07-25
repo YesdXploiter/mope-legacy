@@ -11,6 +11,7 @@ public class VolcanoBiome extends GameObject {
         super(id, x, y, radius, 47);
         this.setBiome(BiomeType.VOLCANO.ordinal());
         this.setMovable(false);
+        this.setSolid(false);
         this.room = room;
     }
 }

@@ -15,6 +15,7 @@ public class GameObject {
     protected int biome;
     private double velocityX;
     private double velocityY;
+    private boolean solid = true;
 
     public boolean isCircle = true;
     public boolean isRectangle = false;
@@ -28,6 +29,14 @@ public class GameObject {
 
     public void setBiome(int biome) {
         this.biome = biome;
+    }
+
+    public void setSolid(boolean solid) {
+        this.solid = solid;
+    }
+
+    public boolean isSolid() {
+        return this.solid;
     }
 
     public double getVelocityX() {

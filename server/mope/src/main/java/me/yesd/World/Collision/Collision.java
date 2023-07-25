@@ -47,7 +47,8 @@ public class Collision {
             o.update();
 
             for (GameObject obj : returnObjects) {
-                collision(o, obj);
+                if (obj.isSolid() && o.isSolid() && o.isCircle() && obj.isCircle())
+                    collision(o, obj);
             }
         }
     }
