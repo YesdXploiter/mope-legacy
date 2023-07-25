@@ -1693,11 +1693,11 @@ CachedText.prototype = {
         }
         var x = 3 + _canvas.width / 2,
           y = fontsize - h / 2;
-        if (this._color == "gradient") {
+        /*if (this._color == "gradient") {
           this._color = ctx.createLinearGradient(x, y, x + 50, y + 50);
           this._color.addColorStop(0, "purple");
           this._color.addColorStop(1, "blue");
-        }
+        }*/
         _ctx.fillStyle = this._color;
         _ctx.fillStyle = this._color;
         _ctx.textAlign = "center";
@@ -1725,7 +1725,7 @@ CachedText.prototype = {
           _ctx.shadowOffsetY = this.strokeW; //0.3333 * this.renderScale;
           _ctx.shadowColor = this.strokeColor; //"black";
         }
-        if (this._color == "gradient") {
+        /*if (this._color == "gradient") {
           this._color = ctx.createLinearGradient(
             3,
             fontsize - h / 2,
@@ -1734,7 +1734,7 @@ CachedText.prototype = {
           );
           this._color.addColorStop(0, "purple");
           this._color.addColorStop(1, "blue");
-        }
+        }*/
         _ctx.fillStyle = this._color;
 
         _ctx.fillText(text, 3, fontsize - h / 2);
@@ -11672,6 +11672,43 @@ Animal.prototype.setNick = function (a) {
 
   //}
 };
+Animal.prototype.getOutlineColor = function () {
+  //plain outline (based on biome)
+  var biome = this.curBiome;
+  if (this.id > 0) {
+    var myPlayer = gameObjsByID[myPlayerID];
+
+    if (this.alwaysPlainOutline) {
+      //used for interfaces
+      return col_outline_land;
+    }
+
+    var drawEdibleCircle =
+      gameMode != gameMode_teamMode ||
+      (myPlayer && myPlayer.teamID != this.teamID && this.teamID != 0);
+
+    if (drawEdibleCircle) {
+      if (this.isEdibleOutlined()) {
+        return col_edibleOutline;
+      }
+      //red outline for dangerous animals
+      if (dangerAniTypes[this.animalType - 1] > 0 && this.id != myPlayerID) {
+        return col_dangerOutline;
+      }
+    }
+
+
+
+    if (this.flag_inWater) biome = biome_ocean;
+    // else if (this.flag_inLava) return "#c64a00";
+
+    if (this.devModeCol) {
+      return "cyan";
+    }
+
+  }
+  return outlineColForBiome(biome);
+};
 
 //drawing helpers
 Animal.prototype.drawEyeAtPos = function (x, y) {
@@ -13573,14 +13610,18 @@ Animal.prototype.readCustomData_onNewlyVisible = function (msg) {
   // read which speices is this animal
   this.animalSpecies = msg.readUInt8();
 
-  const nameColor = msg.readUInt8();
+  const devMode = msg.readUInt8();
 
-  switch (nameColor) {
+  switch (devMode) {
     case 1:
       this.nameColor = "#FFFFFF";
+      this.outlineColor = this.getOutlineColor();
+      this.devModeCol = false;
       break;
     case 2:
-      this.nameColor = "gradient";
+      this.nameColor = "cyan";
+      this.outlineColor = "cyan";
+      this.devModeCol = true;
       break;
   }
 
