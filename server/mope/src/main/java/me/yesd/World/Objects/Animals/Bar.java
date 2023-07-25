@@ -23,6 +23,8 @@ public class Bar {
         return (value / max) * 100;
     }
 
+    public void setBarType(int type) { this.type = type; }
+
     public void addBarValue(int amount) {
         this.value += amount;
         if (this.value > this.max) this.value = this.max;
