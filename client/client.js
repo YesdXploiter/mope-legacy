@@ -1491,12 +1491,12 @@ var clamp = function (n, min, max) {
   return Math.min(max, Math.max(min, n));
 };
 
-var encode_utf8 = function (s) {
-  return unescape(encodeURIComponent(s));
-};
+var encode_utf8 = function(s) {
+  return (encodeURIComponent(s));
+}
 
 var decode_utf8 = function (s) {
-  return decodeURIComponent(escape(s));
+  return decodeURIComponent((s));
 };
 
 var fillTextMultiLine = function (text, x, y) {
@@ -13610,19 +13610,30 @@ Animal.prototype.readCustomData_onNewlyVisible = function (msg) {
   // read which speices is this animal
   this.animalSpecies = msg.readUInt8();
 
-  const devMode = msg.readUInt8();
+  const devmode_Num = msg.readUInt8();
 
-  switch (devMode) {
-    case 1:
+  switch (devmode_Num) {
+    case 0:
       this.nameColor = "#FFFFFF";
       this.outlineColor = this.getOutlineColor();
       this.devModeCol = false;
       break;
-    case 2:
+    case 1:
       this.nameColor = "cyan";
       this.outlineColor = "cyan";
       this.devModeCol = true;
       break;
+    case 2: // stan
+    this.nameColor = "yellow";
+      break;
+    case 3: // booga
+    this.nameColor = "#ee3030";
+      break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+      this.nameColor = "#e23ca6";
   }
 
   //if (gameMode == gameMode_teamMode) this.teamID = msg.readUInt8();
@@ -19243,31 +19254,37 @@ function ByteReader(input) {
   } while (continueReading);
 }
 
-function MsgWriter(a) {
+function MsgWriter(msgSize) {
   this.len = 0;
-  this.dataView = new DataView(new ArrayBuffer(a));
-  this.writeUInt8 = function (a) {
-    this.dataView.setUint8(this.len, a);
-    this.len += 1
+  this.dataView = new DataView(new ArrayBuffer(msgSize));
+  /*if (KTestingBetaMode) {
+    this.dataView.setUint8(this.len, 1);
+    this.len += 1;
+  }*/
+  this.writeUInt8 = function (val) {
+    this.dataView.setUint8(this.len, val);
+    this.len += 1;
   };
-  this.writeUInt16 = function (a) {
-    this.dataView.setUint16(this.len, a, !1);
-    this.len += 2
+  this.writeUInt16 = function (val) {
+    this.dataView.setUint16(this.len, val, false);
+    this.len += 2;
   };
-  this.writeInt16 = function (a) {
-    this.dataView.setInt16(this.len, a, !1);
-    this.len += 2
+  this.writeInt16 = function (val) {
+    this.dataView.setInt16(this.len, val, false);
+    this.len += 2;
   };
-  this.writeUInt32 = function (a) {
-    this.dataView.setUint32(this.len, a, !1);
-    this.len += 4
+  this.writeUInt32 = function (val) {
+    this.dataView.setUint32(this.len, val, false);
+    this.len += 4;
   };
-  this.writeString = function (a) {
-    a = encode_utf8(a);
-    len = a.length;
-    this.writeUInt16(a.length);
-    for (var c = 0; c < len; c++) this.writeUInt8(a.charCodeAt(c))
-  }
+  this.writeString = function (val) {
+    val = encode_utf8(val);
+    len = val.length;
+    this.writeUInt16(val.length);
+    for (var ind = 0; ind < len; ind++) {
+      this.writeUInt8(val.charCodeAt(ind));
+    }
+  };
 }
 
 //

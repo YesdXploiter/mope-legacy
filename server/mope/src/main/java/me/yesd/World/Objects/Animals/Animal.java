@@ -169,7 +169,7 @@ public class Animal extends GameObject {
         }
 
         // Use lerp to smoothly rotate towards the target angle
-        //double newAngle = this.getTier() < 10 ? currentAngle + diff : currentAngle + diff * smoothness;
+        //double newAngle = this.tier < 10 ? currentAngle + diff : currentAngle + diff * smoothness;
         double newAngle = currentAngle + diff * smoothness;
 
         // Ensure newAngle is within [0, 360)
@@ -190,7 +190,7 @@ public class Animal extends GameObject {
     public void writeCustomData_onAdd(MsgWriter writer) {
         writer.writeString(this.playerName);
         writer.writeUInt8(this.info.getAnimalSpecies());
-        writer.writeUInt8(2); // name color
+        writer.writeUInt8(1); // name color
     }
 
     @Override
