@@ -47,8 +47,9 @@ public class Collision {
             o.update();
 
             for (GameObject obj : returnObjects) {
-                if (obj.isSolid() && o.isSolid() && o.isCircle() && obj.isCircle())
+                if (obj.isSolid() && o.isSolid() && o.isCircle() && obj.isCircle()) {
                     collision(o, obj);
+                }
             }
         }
     }
@@ -60,19 +61,17 @@ public class Collision {
 
         // Проверка столкновения
         if (distance < obj1.getRadius() + obj2.getRadius()) {
-            // Расчет угла и минимального смещения
+            // Расчет угла и смещения
             double angle = Math.atan2(dy, dx);
             double minTranslationDistance = obj1.getRadius() + obj2.getRadius() - distance;
 
-            // Если оба объекта могут двигаться, смещаем каждый на половину расстояния
+            // Смещение объектов
             if (obj1.isMovable() && obj2.isMovable()) {
-                obj1.setPosition(obj1.getX() - (minTranslationDistance / 2) * Math.cos(angle),
-                        obj1.getY() - (minTranslationDistance / 2) * Math.sin(angle));
-                obj2.setPosition(obj2.getX() + (minTranslationDistance / 2) * Math.cos(angle),
-                        obj2.getY() + (minTranslationDistance / 2) * Math.sin(angle));
-            }
-            // Иначе, смещаем только движущийся объект на полное расстояние
-            else if (obj1.isMovable()) {
+                obj1.setPosition(obj1.getX() - minTranslationDistance * Math.cos(angle),
+                        obj1.getY() - minTranslationDistance * Math.sin(angle));
+                obj2.setPosition(obj2.getX() + minTranslationDistance * Math.cos(angle),
+                        obj2.getY() + minTranslationDistance * Math.sin(angle));
+            } else if (obj1.isMovable()) {
                 obj1.setPosition(obj1.getX() - minTranslationDistance * Math.cos(angle),
                         obj1.getY() - minTranslationDistance * Math.sin(angle));
             } else if (obj2.isMovable()) {
