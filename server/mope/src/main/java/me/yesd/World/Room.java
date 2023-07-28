@@ -35,6 +35,7 @@ public class Room extends Thread {
 
     private Land land;
     private Beach beach1;
+    private Beach beach2;
 
     private VolcanoBiome volcanoBiome;
 
@@ -159,6 +160,10 @@ public class Room extends Thread {
                 Constants.HEIGHT / 2 + Constants.ARCTICH / 2,
                 Constants.BEACHW, Constants.HEIGHT - Constants.ARCTICH, this, 1);
         this.addObj(beach1);
+        this.beach2 = new Beach(this.getID(), Constants.WIDTH - Constants.OCEANW - Constants.BEACHW / 2,
+            Constants.HEIGHT / 2 + Constants.ARCTICH / 2,
+            Constants.BEACHW, Constants.HEIGHT - Constants.ARCTICH, this, 1);
+        this.addObj(beach2);
 
         this.land = new Land(this.getID(), Constants.WIDTH / 2, Constants.HEIGHT / 2,
                 Constants.LANDW, Constants.LANDH,
