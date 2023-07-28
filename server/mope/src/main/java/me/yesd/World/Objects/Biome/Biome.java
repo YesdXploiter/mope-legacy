@@ -1,10 +1,12 @@
 package me.yesd.World.Objects.Biome;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import me.yesd.Utilities.PerlinNoise;
 import me.yesd.Utilities.Utilities;
 import me.yesd.World.Room;
+import me.yesd.World.Collision.Collision;
 import me.yesd.World.Objects.GameObject;
 import me.yesd.World.Objects.Rectangle;
 import me.yesd.World.Objects.Static.Hill;
@@ -58,8 +60,11 @@ public class Biome extends Rectangle {
             double noise = PerlinNoise.noise(x / 100.0, y / 100.0);
             noise = (noise + 1) / 2;
             int scaledRad = (int) (rad + noise * 20);
-
+            List<Hill> hills = new ArrayList<>();
             Hill hill = new Hill(this.room.getID(), x, y, scaledRad, this.getBiome());
+            for(Hill hill1 : hills) {
+            Collision.HillsCollision(hill1, hill);
+            }
             this.room.addObj(hill);
         }
     }

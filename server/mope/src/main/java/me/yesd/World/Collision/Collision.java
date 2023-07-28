@@ -80,4 +80,30 @@ public class Collision {
             }
         }
     }
+    public static void HillsCollision(GameObject obj1, GameObject obj2) {
+        double dx = obj2.getX() - obj1.getX();
+        double dy = obj2.getY() - obj1.getY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Проверка столкновения
+        if (distance < (obj1.getRadius() + obj2.getRadius())) {
+            // Расчет угла и смещения
+            double angle = Math.atan2(dy, dx);
+            double minTranslationDistance = obj1.getRadius() * 1.5 + obj2.getRadius() * 1.5 - distance;
+
+            // Смещение объектов
+            if (obj1.isMovable() && obj2.isMovable()) {
+                obj1.setPosition(obj1.getX() - minTranslationDistance * Math.cos(angle),
+                        obj1.getY() - minTranslationDistance * Math.sin(angle));
+                obj2.setPosition(obj2.getX() + minTranslationDistance * Math.cos(angle),
+                        obj2.getY() + minTranslationDistance * Math.sin(angle));
+            } else if (obj1.isMovable()) {
+                obj1.setPosition(obj1.getX() - minTranslationDistance * Math.cos(angle),
+                        obj1.getY() - minTranslationDistance * Math.sin(angle));
+            } else if (obj2.isMovable()) {
+                obj2.setPosition(obj2.getX() + minTranslationDistance * Math.cos(angle),
+                        obj2.getY() + minTranslationDistance * Math.sin(angle));
+            }
+        }
+    }
 }
