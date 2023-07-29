@@ -6,8 +6,8 @@ import java.util.List;
 import me.yesd.World.Objects.GameObject;
 
 public class QuadTree {
-    private int MAX_OBJECTS = 10;
-    private int MAX_LEVELS = 5;
+    private int MAX_OBJECTS = 5;
+    private int MAX_LEVELS = 10;
 
     private int level;
     private List<GameObject> objects;
