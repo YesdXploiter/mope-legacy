@@ -39,7 +39,7 @@ public class Room extends Thread {
 
     private VolcanoBiome volcanoBiome;
 
-    private GameList objects;
+    public static GameList objects;
 
     private Ocean oleft;
 
@@ -169,7 +169,7 @@ public class Room extends Thread {
                 Constants.LANDW, Constants.LANDH,
                 this);
         this.addObj(land);
-        land.spawnHills(200);
+        land.spawnHills(150);
 
         this.oleft = new Ocean(this.getID(), Constants.OCEANW / 2, Constants.HEIGHT /
                 2, Constants.OCEANW,

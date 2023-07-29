@@ -104,6 +104,8 @@ public class Collision {
                 obj2.setPosition(obj2.getX() + minTranslationDistance * Math.cos(angle),
                         obj2.getY() + minTranslationDistance * Math.sin(angle));
             }
-        }
+        }/* else if(distance > (obj1.getRadius() + obj2.getRadius()) && distance > (obj1.getRadius() * 2 + obj2.getRadius() * 2) && obj2.getType() == 3) {
+            Room.objects.remove(obj2);
+        }*/
     }
 }
