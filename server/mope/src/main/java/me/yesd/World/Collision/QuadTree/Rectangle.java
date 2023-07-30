@@ -1,5 +1,7 @@
 package me.yesd.World.Collision.QuadTree;
 
+import me.yesd.World.Objects.GameObject;
+
 public class Rectangle {
     private int x, y, width, height;
 
@@ -24,5 +26,21 @@ public class Rectangle {
 
     public int getHeight() {
         return height;
+    }
+
+    public boolean contains(GameObject circle) {
+        double circleX = circle.getX();
+        double circleY = circle.getY();
+        double circleRadius = circle.getRadius();
+
+        double rectLeft = x;
+        double rectRight = x + width;
+        double rectTop = y;
+        double rectBottom = y + height;
+
+        boolean insideX = (circleX + circleRadius >= rectLeft) && (circleX - circleRadius <= rectRight);
+        boolean insideY = (circleY + circleRadius >= rectTop) && (circleY - circleRadius <= rectBottom);
+
+        return insideX && insideY;
     }
 }

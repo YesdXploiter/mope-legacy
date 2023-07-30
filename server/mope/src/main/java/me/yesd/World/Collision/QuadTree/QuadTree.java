@@ -55,7 +55,8 @@ public class QuadTree {
         boolean topQuadrant = (circle.getY() < horizontalMidpoint
                 && circle.getY() + circle.getRadius() < horizontalMidpoint);
         // Object can completely fit within the bottom quadrants
-        boolean bottomQuadrant = (circle.getY() > horizontalMidpoint);
+        boolean bottomQuadrant = (circle.getY() > horizontalMidpoint
+                && circle.getY() - circle.getRadius() > horizontalMidpoint);
 
         // Object can completely fit within the left quadrants
         if (circle.getX() < verticalMidpoint && circle.getX() + circle.getRadius() < verticalMidpoint) {
@@ -65,7 +66,7 @@ public class QuadTree {
                 index = 2;
             }
             // Object can completely fit within the right quadrants
-        } else if (circle.getX() > verticalMidpoint) {
+        } else if (circle.getX() > verticalMidpoint && circle.getX() - circle.getRadius() < verticalMidpoint) {
             if (topQuadrant) {
                 index = 0;
             } else if (bottomQuadrant) {
@@ -81,7 +82,7 @@ public class QuadTree {
         if (nodes[0] != null) {
             int index = getIndex(circle);
 
-            if (index != -1) {
+            if (index != -1 && nodes[index].bounds.contains(circle)) {
                 nodes[index].insert(circle);
                 return;
             }
@@ -97,7 +98,7 @@ public class QuadTree {
             int i = 0;
             while (i < objects.size()) {
                 int index = getIndex(objects.get(i));
-                if (index != -1) {
+                if (index != -1 && nodes[index].bounds.contains(objects.get(i))) {
                     nodes[index].insert(objects.remove(i));
                 } else {
                     i++;
@@ -106,10 +107,9 @@ public class QuadTree {
         }
     }
 
-    // Return all objects that could collide with the given object
     public List<GameObject> retrieve(List<GameObject> returnObjects, GameObject circle) {
         int index = getIndex(circle);
-        if (index != -1 && nodes[0] != null) {
+        if (index != -1 && nodes[0] != null && nodes[index].bounds.contains(circle)) {
             nodes[index].retrieve(returnObjects, circle);
         }
 
@@ -117,4 +117,5 @@ public class QuadTree {
 
         return returnObjects;
     }
+
 }

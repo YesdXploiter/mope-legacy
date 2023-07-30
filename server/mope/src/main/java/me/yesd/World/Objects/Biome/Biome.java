@@ -62,8 +62,8 @@ public class Biome extends Rectangle {
             int scaledRad = (int) (rad + noise * 20);
             List<Hill> hills = new ArrayList<>();
             Hill hill = new Hill(this.room.getID(), x, y, scaledRad, this.getBiome());
-            for(Hill hill1 : hills) {
-            Collision.HillsCollision(hill1, hill);
+            for (Hill hill1 : hills) {
+                Collision.HillsCollision(hill1, hill);
             }
             this.room.addObj(hill);
         }

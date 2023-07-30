@@ -54,6 +54,7 @@ public class GameObject {
     public void remVelocityY(final double velocityY) {
         this.velocityY -= velocityY;
     }
+
     public void addVelocityX(final double velocityX) {
         this.velocityX += velocityX;
     }
@@ -172,6 +173,16 @@ public class GameObject {
             else
                 this.y = y;
         }
+    }
+
+    private double mass = 1.0;
+
+    public double getMass() {
+        return mass;
+    }
+
+    public void setMass(double mass) {
+        this.mass = mass;
     }
 
     public GameObject(final int id, final double x, final double y, final int radius, final int type) {
