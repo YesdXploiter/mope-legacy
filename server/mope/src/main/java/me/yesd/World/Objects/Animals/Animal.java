@@ -210,6 +210,7 @@ public class Animal extends GameObject {
     public void rotateTowards(double mx, double my) {
         double playerX = this.getX(); // player x position
         double playerY = this.getY(); // player y position
+
         this.targetAngle = (Math.atan2(my - playerY, mx - playerX) * 180) / Math.PI;
         if (this.targetAngle < 0) {
             this.targetAngle += 360;
@@ -294,7 +295,8 @@ public class Animal extends GameObject {
                 // isBoosting = true;
                 // this.lastBoostTime = new Date().getTime();
             }
-            if (currentTime - this.lastBoostTime >= this.lastBoostTimeout && this.isBoosting && this.getBar().getValue() > 25) {
+            if (currentTime - this.lastBoostTime >= this.lastBoostTimeout && this.isBoosting
+                    && this.getBar().getValue() > 25) {
                 if (this.boostingAmount == 0) {
                     this.boostingAngle = this.targetAngle + 180;
                 }

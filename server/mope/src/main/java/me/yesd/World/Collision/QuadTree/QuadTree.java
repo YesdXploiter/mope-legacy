@@ -46,8 +46,8 @@ public class QuadTree {
     }
 
     // Determine which node the object belongs to.
-    private int getIndex(GameObject circle) {
-        int index = -1;
+    private ArrayList<Integer> getIndex(GameObject circle) {
+        ArrayList<Integer> index = new ArrayList<>();
         double verticalMidpoint = bounds.getX() + (bounds.getWidth() / 2);
         double horizontalMidpoint = bounds.getY() + (bounds.getHeight() / 2);
 
@@ -61,16 +61,16 @@ public class QuadTree {
         // Object can completely fit within the left quadrants
         if (circle.getX() < verticalMidpoint && circle.getX() + circle.getRadius() < verticalMidpoint) {
             if (topQuadrant) {
-                index = 1;
+                index.add(1);
             } else if (bottomQuadrant) {
-                index = 2;
+                index.add(2);
             }
             // Object can completely fit within the right quadrants
         } else if (circle.getX() > verticalMidpoint && circle.getX() - circle.getRadius() < verticalMidpoint) {
             if (topQuadrant) {
-                index = 0;
+                index.add(0);
             } else if (bottomQuadrant) {
-                index = 3;
+                index.add(3);
             }
         }
 
@@ -80,10 +80,13 @@ public class QuadTree {
     // Insert the object
     public void insert(GameObject circle) {
         if (nodes[0] != null) {
-            int index = getIndex(circle);
+            ArrayList<Integer> index = getIndex(circle);
 
-            if (index != -1 && nodes[index].bounds.contains(circle)) {
-                nodes[index].insert(circle);
+            if (index.size() > 0) {
+                for (Integer ind : index) {
+                    if (nodes[ind].bounds.contains(circle))
+                        nodes[ind].insert(circle);
+                }
                 return;
             }
         }
@@ -97,9 +100,12 @@ public class QuadTree {
 
             int i = 0;
             while (i < objects.size()) {
-                int index = getIndex(objects.get(i));
-                if (index != -1 && nodes[index].bounds.contains(objects.get(i))) {
-                    nodes[index].insert(objects.remove(i));
+                ArrayList<Integer> index = getIndex(objects.get(i));
+                if (index.size() > 0) {
+                    for (Integer ind : index) {
+                        if (nodes[ind].bounds.contains(objects.get(i)))
+                            nodes[ind].insert(objects.remove(i));
+                    }
                 } else {
                     i++;
                 }
@@ -108,9 +114,12 @@ public class QuadTree {
     }
 
     public List<GameObject> retrieve(List<GameObject> returnObjects, GameObject circle) {
-        int index = getIndex(circle);
-        if (index != -1 && nodes[0] != null && nodes[index].bounds.contains(circle)) {
-            nodes[index].retrieve(returnObjects, circle);
+        ArrayList<Integer> index = getIndex(circle);
+        if (index.size() > 0 && nodes[0] != null) {
+            for (Integer ind : index) {
+                if (nodes[ind].bounds.contains(circle))
+                    nodes[ind].retrieve(returnObjects, circle);
+            }
         }
 
         returnObjects.addAll(objects);

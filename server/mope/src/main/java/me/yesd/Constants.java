@@ -23,5 +23,5 @@ public class Constants {
         public static final int TICKS_PER_SECOND = 20;
         public static final int VERSION = 1;
         public static final int STARTING_TIER = Utilities.toInt(conf.GetProp("startTier", "1"));
-        public static final double ROTATIONSPEED = 0.2;
+        public static final double ROTATIONSPEED = 0.02;
 }
