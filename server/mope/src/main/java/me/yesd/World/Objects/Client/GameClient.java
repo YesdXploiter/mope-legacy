@@ -86,6 +86,13 @@ public class GameClient {
                     this.handleRequest(reader);
                     break;
                 }
+                case LEFTCLICK: {
+                    if (this.player != null) {
+                        int bol = reader.readUInt8();
+                        this.player.changeBoost(bol == 1);
+                    }
+                    break;
+                }
 
                 case PING: {
                     this.handlePing();

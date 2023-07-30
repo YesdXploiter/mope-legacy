@@ -54,6 +54,13 @@ public class GameObject {
     public void remVelocityY(final double velocityY) {
         this.velocityY -= velocityY;
     }
+    public void addVelocityX(final double velocityX) {
+        this.velocityX += velocityX;
+    }
+
+    public void addVelocityY(final double velocityY) {
+        this.velocityY += velocityY;
+    }
 
     public double getVelocityY() {
         return this.velocityY;
