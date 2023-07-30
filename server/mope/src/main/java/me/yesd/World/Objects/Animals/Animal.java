@@ -74,7 +74,7 @@ public class Animal extends GameObject {
 
     private boolean canClimbHills = false;
     private boolean isBoosting = false;
-    private double lastBoostTime = -1500;
+    private double lastBoostTimeout = 1500;
     private double boostingAmount = 0;
     private double targetAngle = 0;
     private double boostingAngle = 0;
@@ -107,6 +107,8 @@ public class Animal extends GameObject {
 
     protected long godmode_time;
     protected boolean godMode = false;
+
+    public long lastBoostTime;
 
     public Animal(int id, double x, double y, AnimalInfo info, String playerName, GameClient client) {
         super(id, x, y, Tier.byOrdinal(info.getTier()).getBaseRadius(), 2);
@@ -287,19 +289,19 @@ public class Animal extends GameObject {
     private void boost() {
         double currentTime = new Date().getTime();
         if (this.getBoost()) {
-            if (currentTime - this.lastBoostTime >= 1500 &&
+            if (currentTime - this.lastBoostTime >= this.lastBoostTimeout &&
                     this.getBar().getValue() > 25) {
                 // isBoosting = true;
-                this.lastBoostTime = new Date().getTime();
+                // this.lastBoostTime = new Date().getTime();
             }
-            if (this.isBoosting && this.getBar().getValue() > 25) {
+            if (currentTime - this.lastBoostTime >= this.lastBoostTimeout && this.isBoosting && this.getBar().getValue() > 25) {
                 if (this.boostingAmount == 0) {
                     this.boostingAngle = this.targetAngle + 180;
                 }
                 this.boostingAmount++;
                 double speed = this.boostSpeed / this.boostingAmount;
-                var newPosX = rotateVectorToAngleX(0, 0, 0 + speed, 0, this.boostingAngle, false);
-                var newPosY = rotateVectorToAngleY(0, 0, 0 + speed, 0, this.boostingAngle, false);
+                double newPosX = rotateVectorToAngleX(0, 0, 0 + speed, 0, this.boostingAngle, false);
+                double newPosY = rotateVectorToAngleY(0, 0, 0 + speed, 0, this.boostingAngle, false);
                 this.addVelocityX(newPosX);
                 this.addVelocityY(newPosY);
                 this.lastBoostTime = new Date().getTime();
