@@ -23,6 +23,5 @@ public class Constants {
         public static final int TICKS_PER_SECOND = 10;
         public static final int VERSION = 1;
         public static final int STARTING_TIER = Utilities.toInt(conf.GetProp("startTier", "1"));
-        public static final double SMOOTHNESS = 0.35;
-        public static final double RADIUS_NORMALIZATION_FACTOR = 55;
+        public static final double ROTATIONSPEED = 0.2;
 }

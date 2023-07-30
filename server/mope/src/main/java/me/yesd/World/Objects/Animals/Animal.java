@@ -1,8 +1,6 @@
 package me.yesd.World.Objects.Animals;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import me.yesd.Constants;
 import me.yesd.Sockets.FlagWriter;
@@ -81,13 +79,16 @@ public class Animal extends GameObject {
     private double targetAngle = 0;
     private double boostingAngle = 0;
     private double boostSpeed = 0.5 * 50;
+
     public boolean setBoostingAmount(double boostingAmount) {
         this.boostingAmount = boostingAmount;
         return canClimbHills;
     }
+
     public boolean getBoost() {
         return this.isBoosting;
     }
+
     public void changeBoost(boolean boost) {
         this.isBoosting = boost;
     }
@@ -160,75 +161,107 @@ public class Animal extends GameObject {
 
     protected int speed = 3;
 
-    public void rotateTowards(double targetX, double targetY) {
+    // public void rotateTowards(double targetX, double targetY) {
+    // double playerX = this.getX(); // player x position
+    // double playerY = this.getY(); // player y position
+    // double smoothness = Constants.SMOOTHNESS; // smoothness of rotation
+
+    // // Add dependency on radius
+    // double radius = this.getRadius();
+    // double radiusFactor = Math.max(1, radius /
+    // Constants.RADIUS_NORMALIZATION_FACTOR);
+    // smoothness /= radiusFactor;
+
+    // // Calculate the target angle
+    // this.targetAngle = Math.atan2(targetY - playerY, targetX - playerX) * (180 /
+    // Math.PI);
+
+    // // Adjust for game's coordinate system
+    // if (this.targetAngle < 0) {
+    // this.targetAngle += 360;
+    // }
+    // this.targetAngle = (this.targetAngle + 180) % 360;
+
+    // double currentAngle = (this.getAngle() + 360) % 360;
+
+    // // Calculate the difference in angle
+    // double diff = this.targetAngle - currentAngle;
+    // if (diff > 180) {
+    // diff -= 360;
+    // } else if (diff < -180) {
+    // diff += 360;
+    // }
+
+    // // Use lerp to smoothly rotate towards the target angle
+    // //double newAngle = this.tier < 10 ? currentAngle + diff : currentAngle +
+    // diff * smoothness;
+    // double newAngle = currentAngle + diff * smoothness;
+
+    // // Ensure newAngle is within [0, 360)
+    // newAngle = (newAngle + 360) % 360;
+
+    // // Set the new angle
+    // this.addAngle(newAngle - this.getAngle());
+
+    // }
+
+    public void rotateTowards(double mx, double my) {
         double playerX = this.getX(); // player x position
         double playerY = this.getY(); // player y position
-        double smoothness = Constants.SMOOTHNESS; // smoothness of rotation
-
-        // Add dependency on radius
-        double radius = this.getRadius();
-        double radiusFactor = Math.max(1, radius / Constants.RADIUS_NORMALIZATION_FACTOR);
-        smoothness /= radiusFactor;
-
-        // Calculate the target angle
-        this.targetAngle = Math.atan2(targetY - playerY, targetX - playerX) * (180 / Math.PI);
-
-        // Adjust for game's coordinate system
+        this.targetAngle = (Math.atan2(my - playerY, mx - playerX) * 180) / Math.PI;
         if (this.targetAngle < 0) {
-          this.targetAngle += 360;
-        }
-        this.targetAngle = (this.targetAngle + 180) % 360;
-
-        double currentAngle = (this.getAngle() + 360) % 360;
-
-        // Calculate the difference in angle
-        double diff = this.targetAngle - currentAngle;
-        if (diff > 180) {
-            diff -= 360;
-        } else if (diff < -180) {
-            diff += 360;
+            this.targetAngle += 360;
         }
 
-        // Use lerp to smoothly rotate towards the target angle
-        //double newAngle = this.tier < 10 ? currentAngle + diff : currentAngle + diff * smoothness;
-        double newAngle = currentAngle + diff * smoothness;
+        this.targetAngle += 180;
 
-        // Ensure newAngle is within [0, 360)
-        newAngle = (newAngle + 360) % 360;
+        double dtheta = this.targetAngle - this.getAngle();
 
-        // Set the new angle
-        this.addAngle(newAngle - this.getAngle());
+        if (dtheta > 180)
+            dtheta -= 360;
+        else if (dtheta < -180)
+            dtheta += 360;
 
+        this.addAngle(Constants.ROTATIONSPEED * dtheta);
+
+        if (this.getAngle() < 0) {
+            this.addAngle(360);
+        } else if (this.getAngle() > 360) {
+            this.addAngle(-360);
+        }
     }
 
     private void movement() {
         Pointer mouse = this.getClient().getMouse();
         double dx = mouse.x - this.getX();
         double dy = mouse.y - this.getY();
-        this.rotateTowards(mouse.x, mouse.y);
-      
+
         double distance = Math.sqrt(dx * dx + dy * dy);
-      
+
         double moveDistance = Math.min(this.speed, distance);
-      
+
         distance = Math.max(distance, 1);
-      
+
         double ratio = moveDistance / distance;
-      
+
         double newX = dx * ratio;
         double newY = dy * ratio;
-      
+
         this.setVelocityX(newX);
         this.setVelocityY(newY);
-      
-        this.boost();
-        
-        /*int x = this.getClient().getMouse().x;
-        int y = this.getClient().getMouse().y;
 
-        this.addAccelerationTowards(x, y, speed);*/
+        this.boost();
+
+        /*
+         * int x = this.getClient().getMouse().x;
+         * int y = this.getClient().getMouse().y;
+         * 
+         * this.addAccelerationTowards(x, y, speed);
+         */
     }
-    private double rotateVectorToAngleX(double cx, double cy, double x, double y, double angle, boolean anticlock_wise) {
+
+    private double rotateVectorToAngleX(double cx, double cy, double x, double y, double angle,
+            boolean anticlock_wise) {
         if (angle == 0) {
             return x;
         }
@@ -238,7 +271,9 @@ public class Animal extends GameObject {
         double nx = cos * (x - cx) + sin * (y - cy) + cx;
         return nx;
     }
-    private double rotateVectorToAngleY(double cx, double cy, double x, double y, double angle, boolean anticlock_wise) {
+
+    private double rotateVectorToAngleY(double cx, double cy, double x, double y, double angle,
+            boolean anticlock_wise) {
         if (angle == 0) {
             return y;
         }
@@ -248,55 +283,59 @@ public class Animal extends GameObject {
         double ny = cos * (y - cy) - sin * (x - cx) + cy;
         return ny;
     }
+
     private void boost() {
         double currentTime = new Date().getTime();
         if (this.getBoost()) {
-          if (
-            currentTime - this.lastBoostTime >= 1500 &&
-            this.getBar().getValue() > 25
-          ) {
-            //isBoosting = true;
-            this.lastBoostTime = new Date().getTime();
-          }
-          if (this.isBoosting && this.getBar().getValue() > 25) {
-            if (this.boostingAmount == 0) {
-              this.boostingAngle = this.targetAngle + 180;
+            if (currentTime - this.lastBoostTime >= 1500 &&
+                    this.getBar().getValue() > 25) {
+                // isBoosting = true;
+                this.lastBoostTime = new Date().getTime();
             }
-            this.boostingAmount++;
-            double speed = this.boostSpeed / this.boostingAmount;
-            var newPosX = rotateVectorToAngleX(0, 0, 0 + speed, 0, this.boostingAngle, false);
-            var newPosY = rotateVectorToAngleY(0, 0, 0 + speed, 0, this.boostingAngle, false);
-            this.addVelocityX(newPosX);
-            this.addVelocityY(newPosY);
-            this.lastBoostTime = new Date().getTime();
-            if (this.boostingAmount >= 8) {
-              this.boostingAmount = 0;
-              //isBoosting = false;
+            if (this.isBoosting && this.getBar().getValue() > 25) {
+                if (this.boostingAmount == 0) {
+                    this.boostingAngle = this.targetAngle + 180;
+                }
+                this.boostingAmount++;
+                double speed = this.boostSpeed / this.boostingAmount;
+                var newPosX = rotateVectorToAngleX(0, 0, 0 + speed, 0, this.boostingAngle, false);
+                var newPosY = rotateVectorToAngleY(0, 0, 0 + speed, 0, this.boostingAngle, false);
+                this.addVelocityX(newPosX);
+                this.addVelocityY(newPosY);
+                this.lastBoostTime = new Date().getTime();
+                if (this.boostingAmount >= 8) {
+                    this.boostingAmount = 0;
+                    // isBoosting = false;
+                }
             }
-          }
         }
-      };
-      public double speedManipulation(double speed) {
-        /*if (this.stunnedSeconds > 0)
-            speed /= 1.5;
-        if (this.waterAniSlowingSeconds > 0 && !this.bypass_waterani_slowness)
-            speed /= 2;
-        if (this.frozenSeconds > 0)
-            speed /= 2;
-        if (this.paralizedSeconds > 0)
-            speed /= 4;
-        if (this.isWaterfowl() && this.getBiome() != 1)
-            speed /= 2;
-        if (!this.isFastInWater() && this.getBiome() == 1 && !this.flag_fliesLikeDragon)
-            speed /= 2;
-        if (!this.isFastInMud() && this.flag_eff_isInMud && !this.flag_fliesLikeDragon)
-            speed /= 2.5;
-        if (this.isWaterfowl() && this.getBiome() == 1)
-            speed *= 1.3;
-        if (this.isDiveActive())
-            speed /= 1.3;
-        if (!this.abilSpeed.isDone() && !this.bypassAbilSpeed)
-            speed /= 2;*/
+    };
+
+    public double speedManipulation(double speed) {
+        /*
+         * if (this.stunnedSeconds > 0)
+         * speed /= 1.5;
+         * if (this.waterAniSlowingSeconds > 0 && !this.bypass_waterani_slowness)
+         * speed /= 2;
+         * if (this.frozenSeconds > 0)
+         * speed /= 2;
+         * if (this.paralizedSeconds > 0)
+         * speed /= 4;
+         * if (this.isWaterfowl() && this.getBiome() != 1)
+         * speed /= 2;
+         * if (!this.isFastInWater() && this.getBiome() == 1 &&
+         * !this.flag_fliesLikeDragon)
+         * speed /= 2;
+         * if (!this.isFastInMud() && this.flag_eff_isInMud &&
+         * !this.flag_fliesLikeDragon)
+         * speed /= 2.5;
+         * if (this.isWaterfowl() && this.getBiome() == 1)
+         * speed *= 1.3;
+         * if (this.isDiveActive())
+         * speed /= 1.3;
+         * if (!this.abilSpeed.isDone() && !this.bypassAbilSpeed)
+         * speed /= 2;
+         */
         return speed;
     }
 

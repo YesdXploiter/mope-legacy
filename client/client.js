@@ -1,6 +1,6 @@
 var gamever = 1;
 var KTestingModeON = true;
-var disableInterpolate = false, angleLerpRate = 0.1; //var disableInterpolate = true, angleLerpRate = 0.21;
+var disableInterpolate = false, angleLerpRate = 0.175; //var disableInterpolate = true, angleLerpRate = 0.21;
 var KTestingBetaMode = true && !KTestingModeON;
 console.log("\n\n\n");
 console.log(
@@ -1491,7 +1491,7 @@ var clamp = function (n, min, max) {
   return Math.min(max, Math.max(min, n));
 };
 
-var encode_utf8 = function(s) {
+var encode_utf8 = function (s) {
   return (encodeURIComponent(s));
 }
 
@@ -13624,10 +13624,10 @@ Animal.prototype.readCustomData_onNewlyVisible = function (msg) {
       this.devModeCol = true;
       break;
     case 2: // stan
-    this.nameColor = "yellow";
+      this.nameColor = "yellow";
       break;
     case 3: // booga
-    this.nameColor = "#ee3030";
+      this.nameColor = "#ee3030";
       break;
     case 4:
     case 5:
