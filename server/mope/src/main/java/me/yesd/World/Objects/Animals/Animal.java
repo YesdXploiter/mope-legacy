@@ -298,10 +298,10 @@ public class Animal extends GameObject {
                 }
                 this.boostingAmount++;
                 double speed = this.boostSpeed / this.boostingAmount;
-//                var newPosX = rotateVectorToAngleX(0, 0, 0 + speed, 0, this.boostingAngle, false);
-//                var newPosY = rotateVectorToAngleY(0, 0, 0 + speed, 0, this.boostingAngle, false);
-//                this.addVelocityX(newPosX);
-//                this.addVelocityY(newPosY);
+                var newPosX = rotateVectorToAngleX(0, 0, 0 + speed, 0, this.boostingAngle, false);
+                var newPosY = rotateVectorToAngleY(0, 0, 0 + speed, 0, this.boostingAngle, false);
+                this.addVelocityX(newPosX);
+                this.addVelocityY(newPosY);
                 this.lastBoostTime = new Date().getTime();
                 if (this.boostingAmount >= 8) {
                     this.boostingAmount = 0;
