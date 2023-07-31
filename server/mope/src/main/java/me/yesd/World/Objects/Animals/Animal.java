@@ -11,9 +11,25 @@ import me.yesd.World.Objects.Client.Pointer;
 
 public class Animal extends GameObject {
 
+    public Animal(int id, double x, double y, AnimalInfo info, String playerName, GameClient client) {
+        super(id, x, y, Tier.byOrdinal(info.getTier()).getBaseRadius(), 2);
+
+        this.bar = new Bar(0, 100);
+        this.client = client;
+        this.playerName = playerName;
+        this.info = info;
+        this.setSendsAngle(true);
+        this.godMode = true;
+        this.godmode_time = new Date().getTime() + 3000;
+    }
+
     public AnimalInfo info = null;
 
     private int biome;
+    private Bar bar;
+    private int speed = 3;
+    private GameClient client;
+
     private boolean divePossible = false;
     private boolean diveMain = false;
     private boolean diveUsable = false;
@@ -73,17 +89,19 @@ public class Animal extends GameObject {
     public boolean effecT_isZombie;
 
     private boolean canClimbHills = false;
-    private boolean isBoosting = false;
-    private double lastBoostTimeout = 1500;
-    private double boostingAmount = 0;
-    private double targetAngle = 0;
-    private double boostingAngle = 0;
-    private double boostSpeed = 0.5 * 50;
 
-    public boolean setBoostingAmount(double boostingAmount) {
-        this.boostingAmount = boostingAmount;
-        return canClimbHills;
-    }
+    private double targetAngle = 0;
+
+    public long lastBoostTime;
+    private long boostTimestamp;
+    private boolean isBoosting = false;
+    protected long boostCooldown = 1500;
+    protected double boostForce = 25;
+
+    public String playerName;
+
+    private boolean godMode = false;
+    private long godmode_time;
 
     public boolean getBoost() {
         return this.isBoosting;
@@ -101,33 +119,40 @@ public class Animal extends GameObject {
         return this.canClimbHills;
     }
 
-    private Bar bar;
-
-    public String playerName;
-
-    protected long godmode_time;
-    protected boolean godMode = false;
-
-    public long lastBoostTime;
-
-    public Animal(int id, double x, double y, AnimalInfo info, String playerName, GameClient client) {
-        super(id, x, y, Tier.byOrdinal(info.getTier()).getBaseRadius(), 2);
-
-        this.bar = new Bar(0, 100);
-        this.client = client;
-        this.playerName = playerName;
-        this.info = info;
-        this.setSendsAngle(true);
-        this.godMode = true;
-        this.godmode_time = new Date().getTime() + 3000;
-    }
-
     public AnimalInfo getInfo() {
         return info;
     }
 
     public int getBiome() {
         return biome;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public Bar getBar() {
+        return this.bar;
+    }
+
+    public GameClient getClient() {
+        return this.client;
+    }
+
+    public boolean isDiveActive() {
+        return diveActive;
+    }
+
+    public boolean isDiveMain() {
+        return diveMain;
+    }
+
+    public boolean isDiveUsable() {
+        return diveUsable;
     }
 
     public boolean isDivePossible() {
@@ -144,7 +169,10 @@ public class Animal extends GameObject {
 
         Pointer mouse = this.getClient().getMouse();
 
-        movement();
+        double[] coordinates = calculateNewCoordinates();
+        applyMovement(coordinates[0], coordinates[1]);
+
+        boost();
         rotateTowards(mouse.x, mouse.y);
 
         if (this.health > this.maxHealth)
@@ -160,52 +188,6 @@ public class Animal extends GameObject {
         }
 
     }
-
-    protected int speed = 3;
-
-    // public void rotateTowards(double targetX, double targetY) {
-    // double playerX = this.getX(); // player x position
-    // double playerY = this.getY(); // player y position
-    // double smoothness = Constants.SMOOTHNESS; // smoothness of rotation
-
-    // // Add dependency on radius
-    // double radius = this.getRadius();
-    // double radiusFactor = Math.max(1, radius /
-    // Constants.RADIUS_NORMALIZATION_FACTOR);
-    // smoothness /= radiusFactor;
-
-    // // Calculate the target angle
-    // this.targetAngle = Math.atan2(targetY - playerY, targetX - playerX) * (180 /
-    // Math.PI);
-
-    // // Adjust for game's coordinate system
-    // if (this.targetAngle < 0) {
-    // this.targetAngle += 360;
-    // }
-    // this.targetAngle = (this.targetAngle + 180) % 360;
-
-    // double currentAngle = (this.getAngle() + 360) % 360;
-
-    // // Calculate the difference in angle
-    // double diff = this.targetAngle - currentAngle;
-    // if (diff > 180) {
-    // diff -= 360;
-    // } else if (diff < -180) {
-    // diff += 360;
-    // }
-
-    // // Use lerp to smoothly rotate towards the target angle
-    // //double newAngle = this.tier < 10 ? currentAngle + diff : currentAngle +
-    // diff * smoothness;
-    // double newAngle = currentAngle + diff * smoothness;
-
-    // // Ensure newAngle is within [0, 360)
-    // newAngle = (newAngle + 360) % 360;
-
-    // // Set the new angle
-    // this.addAngle(newAngle - this.getAngle());
-
-    // }
 
     public void rotateTowards(double mx, double my) {
         double playerX = this.getX(); // player x position
@@ -240,83 +222,55 @@ public class Animal extends GameObject {
         }
     }
 
-    private void movement() {
+    private double[] calculateNewCoordinates() {
         Pointer mouse = this.getClient().getMouse();
         double dx = mouse.x - this.getX();
         double dy = mouse.y - this.getY();
 
         double distance = Math.sqrt(dx * dx + dy * dy);
-
         double moveDistance = Math.min(this.speed, distance);
-
         distance = Math.max(distance, 1);
 
         double ratio = moveDistance / distance;
+        double angleDifference = Math.abs(Math.toDegrees(Math.atan2(dy, dx)) - this.getAngle());
+        if (angleDifference < 0) {
+            angleDifference += 360;
+        } else if (angleDifference > 360) {
+            angleDifference -= 360;
+        }
 
-        double newX = dx * ratio;
-        double newY = dy * ratio;
+        double newX, newY;
+        if (angleDifference > 90 && angleDifference < 270) {
+            newX = dx * ratio;
+            newY = dy * ratio;
+        } else {
+            double oppositeAngle = this.getAngle() + 180;
+            if (oppositeAngle < 0) {
+                oppositeAngle += 360;
+            } else if (oppositeAngle > 360) {
+                oppositeAngle -= 360;
+            }
 
+            newX = -Math.cos(Math.toRadians(oppositeAngle)) * moveDistance;
+            newY = -Math.sin(Math.toRadians(oppositeAngle)) * moveDistance;
+        }
+
+        return new double[] { newX, newY };
+    }
+
+    private void applyMovement(double newX, double newY) {
         this.setVelocityX(newX);
         this.setVelocityY(newY);
-
-        this.boost();
-
-        /*
-         * int x = this.getClient().getMouse().x;
-         * int y = this.getClient().getMouse().y;
-         * 
-         * this.addAccelerationTowards(x, y, speed);
-         */
-    }
-
-    private double rotateVectorToAngleX(double cx, double cy, double x, double y, double angle,
-            boolean anticlock_wise) {
-        if (angle == 0) {
-            return x;
-        }
-        double radians = ((angle * Math.PI) / 180) * (anticlock_wise ? 1 : -1);
-        double cos = Math.cos(radians);
-        double sin = Math.sin(radians);
-        double nx = cos * (x - cx) + sin * (y - cy) + cx;
-        return nx;
-    }
-
-    private double rotateVectorToAngleY(double cx, double cy, double x, double y, double angle,
-            boolean anticlock_wise) {
-        if (angle == 0) {
-            return y;
-        }
-        double radians = ((angle * Math.PI) / 180) * (anticlock_wise ? 1 : -1);
-        double cos = Math.cos(radians);
-        double sin = Math.sin(radians);
-        double ny = cos * (y - cy) - sin * (x - cx) + cy;
-        return ny;
     }
 
     private void boost() {
-        double currentTime = new Date().getTime();
+        long currentTime = new Date().getTime();
         if (this.getBoost()) {
-            if (currentTime - this.lastBoostTime >= this.lastBoostTimeout &&
-                    this.getBar().getValue() > 25) {
-                // isBoosting = true;
-                // this.lastBoostTime = new Date().getTime();
-            }
-            if (currentTime - this.lastBoostTime >= this.lastBoostTimeout && this.isBoosting
-                    && this.getBar().getValue() > 25) {
-                if (this.boostingAmount == 0) {
-                    this.boostingAngle = this.targetAngle + 180;
-                }
-                this.boostingAmount++;
-                double speed = this.boostSpeed / this.boostingAmount;
-                double newPosX = rotateVectorToAngleX(0, 0, 0 + speed, 0, this.boostingAngle, false);
-                double newPosY = rotateVectorToAngleY(0, 0, 0 + speed, 0, this.boostingAngle, false);
-                this.addVelocityX(newPosX);
-                this.addVelocityY(newPosY);
-                this.lastBoostTime = new Date().getTime();
-                if (this.boostingAmount >= 8) {
-                    this.boostingAmount = 0;
-                    // isBoosting = false;
-                }
+            if (boostTimestamp + boostCooldown < currentTime) {
+                double[] boostcoordinates = calculateNewCoordinates();
+                this.setVelocityX(boostcoordinates[0] * boostForce);
+                this.setVelocityY(boostcoordinates[1] * boostForce);
+                boostTimestamp = currentTime;
             }
         }
     };
@@ -429,19 +383,5 @@ public class Animal extends GameObject {
 
         if (this.flag_eff_dirty)
             writer.writeUInt8(0); // eff_dirtType
-    }
-
-    public boolean isDiveActive() {
-        return diveActive;
-    }
-
-    public Bar getBar() {
-        return this.bar;
-    }
-
-    private GameClient client;
-
-    public GameClient getClient() {
-        return this.client;
     }
 }
