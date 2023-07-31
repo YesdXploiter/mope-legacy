@@ -207,13 +207,9 @@ public class Animal extends GameObject {
         else if (dtheta < -180)
             dtheta += 360;
 
-        double rotationSpeed = Constants.ROTATIONSPEED;
-        double distance = Math.abs(dtheta);
-        if (distance <= 6) {
-            rotationSpeed *= distance / 6; // Изменяем скорость поворота от 0 до максимальной за 6 градусов
-        }
+        double dynamicRotationSpeed = Constants.ROTATIONSPEED * (Math.abs(dtheta) / 180);
 
-        this.addAngle(rotationSpeed * dtheta);
+        this.addAngle(dynamicRotationSpeed * dtheta);
 
         if (this.getAngle() < 0) {
             this.addAngle(360);

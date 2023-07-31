@@ -5,8 +5,10 @@ import java.nio.ByteBuffer;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 import org.java_websocket.server.WebSocketServer;
 
+import me.yesd.Constants;
 import me.yesd.World.Room;
 import me.yesd.World.Objects.Client.GameClient;
 
@@ -17,6 +19,9 @@ public class GameServer extends WebSocketServer {
     public GameServer(Room room) {
         super(new InetSocketAddress("0.0.0.0", 2255));
         this.setReuseAddr(true);
+        if (Constants.USINGSSL) {
+            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(SSL.getContext()));
+        }
         this.room = room;
     }
 

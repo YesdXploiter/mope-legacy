@@ -23,5 +23,9 @@ public class Constants {
         public static final int TICKS_PER_SECOND = 20;
         public static final int VERSION = 1;
         public static final int STARTING_TIER = Utilities.toInt(conf.GetProp("startTier", "1"));
-        public static final double ROTATIONSPEED = 0.12;
+        public static final double ROTATIONSPEED = Utilities.toDouble(conf.GetProp("rotationSpeed", "0.12"));
+        public static final boolean USINGSSL = Utilities.toBool(conf.GetProp("ssl", "false"));
+        public static final String SSLCERTIFICATE = conf.GetProp("sslCertificatePath", "null");
+        public static final String SSLKEY = conf.GetProp("sslKeyPath", "null");
+        public static final double MIN_ROTATIONSPEED = Utilities.toDouble(conf.GetProp("minRotationSpeed", "0"));
 }

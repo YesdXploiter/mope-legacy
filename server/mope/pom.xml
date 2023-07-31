@@ -11,6 +11,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
       <version>1.10.0</version>
@@ -61,6 +66,12 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <version>3.0.0</version>
         <configuration>
+          <archive>
+              <manifest>
+                  <addClasspath>true</addClasspath>
+                  <mainClass>me.yesd.Main</mainClass>
+              </manifest>
+          </archive>
           <appendAssemblyId>false</appendAssemblyId>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
