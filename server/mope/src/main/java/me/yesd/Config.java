@@ -10,9 +10,9 @@ public class Config {
     public static Properties prop = new Properties();
 
     public void SaveProp(String title, String value) {
-        try {
-            prop.setProperty(title, value);
-            prop.store(new FileOutputStream(configfile), null);
+        prop.setProperty(title, value);
+        try (FileOutputStream out = new FileOutputStream(configfile)) {
+            prop.store(out, null);
         } catch (IOException e) {
             //
         }
@@ -20,8 +20,8 @@ public class Config {
 
     public String GetProp(String title, String defaultvalue) {
         String p = defaultvalue;
-        try {
-            prop.load(new FileInputStream(configfile));
+        try (FileInputStream in = new FileInputStream(configfile)) {
+            prop.load(in);
             String a = prop.getProperty(title);
             if (a == null)
                 this.SaveProp(title, p);
