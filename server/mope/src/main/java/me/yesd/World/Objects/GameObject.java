@@ -3,24 +3,25 @@ package me.yesd.World.Objects;
 import me.yesd.Constants;
 import me.yesd.Sockets.MsgWriter;
 import me.yesd.Utilities.Utilities;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class GameObject {
 
     private int type;
-    private double x;
-    private double y;
-    private double z;
+    private volatile double x;
+    private volatile double y;
+    private volatile double z;
     private int radius;
     private int id;
     protected int biome;
-    private double velocityX;
-    private double velocityY;
+    private volatile double velocityX;
+    private volatile double velocityY;
     private boolean solid = true;
 
     public boolean isCircle = true;
     public boolean isRectangle = false;
     public boolean updatingAngle = false;
-    protected double angle = 0;
+    protected volatile double angle = 0;
     private int species = 0;
     public boolean showHP = false;
     public boolean isHurted = false;
@@ -43,24 +44,35 @@ public class GameObject {
         return this.velocityX;
     }
 
+    private final ReentrantLock lock = new ReentrantLock();
+
+    private void withLock(Runnable r) {
+        lock.lock();
+        try {
+            r.run();
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public void setVelocityX(final double velocityX) {
-        this.velocityX = velocityX;
+        withLock(() -> this.velocityX = velocityX);
     }
 
     public void remVelocityX(final double velocityX) {
-        this.velocityX -= velocityX;
+        withLock(() -> this.velocityX -= velocityX);
     }
 
     public void remVelocityY(final double velocityY) {
-        this.velocityY -= velocityY;
+        withLock(() -> this.velocityY -= velocityY);
     }
 
     public void addVelocityX(final double velocityX) {
-        this.velocityX += velocityX;
+        withLock(() -> this.velocityX += velocityX);
     }
 
     public void addVelocityY(final double velocityY) {
-        this.velocityY += velocityY;
+        withLock(() -> this.velocityY += velocityY);
     }
 
     public double getVelocityY() {
@@ -68,7 +80,7 @@ public class GameObject {
     }
 
     public void setVelocityY(final double velocityY) {
-        this.velocityY = velocityY;
+        withLock(() -> this.velocityY = velocityY);
     }
 
     private boolean isMovable = true;
@@ -82,33 +94,35 @@ public class GameObject {
     }
 
     public void update() {
-        this.velocityX += this.accelerationX;
-        this.velocityY += this.accelerationY;
+        withLock(() -> {
+            this.velocityX += this.accelerationX;
+            this.velocityY += this.accelerationY;
 
-        this.setX(this.getX() + this.getVelocityX());
-        this.setY(this.getY() + this.getVelocityY());
+            this.setX(this.getX() + this.getVelocityX());
+            this.setY(this.getY() + this.getVelocityY());
 
-        this.setVelocityX(this.getVelocityX() * 0.8);
-        this.setVelocityY(this.getVelocityY() * 0.8);
+            this.velocityX = this.getVelocityX() * 0.8;
+            this.velocityY = this.getVelocityY() * 0.8;
 
-        this.accelerationX = 0;
-        this.accelerationY = 0;
+            this.accelerationX = 0;
+            this.accelerationY = 0;
+        });
     }
 
     public void addAccelerationX(double accelerationX) {
-        this.accelerationX += accelerationX;
+        withLock(() -> this.accelerationX += accelerationX);
     }
 
     public void addAccelerationY(double accelerationY) {
-        this.accelerationY += accelerationY;
+        withLock(() -> this.accelerationY += accelerationY);
     }
 
     public void setAccelerationX(double accelerationX) {
-        this.accelerationX = accelerationX;
+        withLock(() -> this.accelerationX = accelerationX);
     }
 
     public void setAccelerationY(double accelerationY) {
-        this.accelerationY = accelerationY;
+        withLock(() -> this.accelerationY = accelerationY);
     }
 
     public double getAccelerationX() {
@@ -119,60 +133,68 @@ public class GameObject {
         return this.accelerationY;
     }
 
-    private double accelerationX = 0.0;
-    private double accelerationY = 0.0;
+    private volatile double accelerationX = 0.0;
+    private volatile double accelerationY = 0.0;
 
     public void addAcceleration(double angle, double force) {
-        this.accelerationX += Math.cos(angle) * force;
-        this.accelerationY += Math.sin(angle) * force;
+        withLock(() -> {
+            this.accelerationX += Math.cos(angle) * force;
+            this.accelerationY += Math.sin(angle) * force;
+        });
     }
 
     public void addAngle(double angle) {
-        this.angle += angle;
+        withLock(() -> this.angle += angle);
     }
 
     public void setAngle(double angle) {
-        this.angle = angle;
+        withLock(() -> this.angle = angle);
     }
 
     public void addAccelerationTowards(double targetX, double targetY, double force) {
-        double dx = targetX - this.x;
-        double dy = targetY - this.y;
+        withLock(() -> {
+            double dx = targetX - this.x;
+            double dy = targetY - this.y;
 
-        double angle = Math.atan2(dy, dx);
+            double angle = Math.atan2(dy, dx);
 
-        this.accelerationX += Math.cos(angle) * force;
-        this.accelerationY += Math.sin(angle) * force;
+            this.accelerationX += Math.cos(angle) * force;
+            this.accelerationY += Math.sin(angle) * force;
+        });
     }
 
     public void setX(final double x) {
-        if (Utilities.isValidDouble(x)) {
-            if (x - this.radius - 1 < 1)
-                this.x = 1 + this.radius;
-            else if (x + this.radius + 1 > Constants.WIDTH)
-                this.x = Constants.WIDTH - this.radius - 1;
-            else
-                this.x = x;
-        }
+        withLock(() -> {
+            if (Utilities.isValidDouble(x)) {
+                if (x - this.radius - 1 < 1)
+                    this.x = 1 + this.radius;
+                else if (x + this.radius + 1 > Constants.WIDTH)
+                    this.x = Constants.WIDTH - this.radius - 1;
+                else
+                    this.x = x;
+            }
+        });
     }
 
     public void setXUnsafe(final double x) {
-        this.x = x;
+        withLock(() -> this.x = x);
     }
 
     public void setYUnsafe(final double y) {
-        this.y = y;
+        withLock(() -> this.y = y);
     }
 
     public void setY(final double y) {
-        if (Utilities.isValidDouble(y)) {
-            if (y - this.radius - 1 < 1)
-                this.y = 1 + this.radius;
-            else if (y + this.radius + 1 > Constants.HEIGHT)
-                this.y = Constants.HEIGHT - this.radius - 1;
-            else
-                this.y = y;
-        }
+        withLock(() -> {
+            if (Utilities.isValidDouble(y)) {
+                if (y - this.radius - 1 < 1)
+                    this.y = 1 + this.radius;
+                else if (y + this.radius + 1 > Constants.HEIGHT)
+                    this.y = Constants.HEIGHT - this.radius - 1;
+                else
+                    this.y = y;
+            }
+        });
     }
 
     private double mass = 1.0;
@@ -182,7 +204,7 @@ public class GameObject {
     }
 
     public void setMass(double mass) {
-        this.mass = mass;
+        withLock(() -> this.mass = mass);
     }
 
     public GameObject(final int id, final double x, final double y, final int radius, final int type) {
@@ -272,8 +294,10 @@ public class GameObject {
     }
 
     public void setPosition(double x, double y) {
-        setX(x);
-        setY(y);
+        withLock(() -> {
+            setX(x);
+            setY(y);
+        });
     }
 
 }

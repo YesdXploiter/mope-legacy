@@ -2,6 +2,8 @@ package me.yesd.World.Collision.QuadTree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import me.yesd.World.Objects.GameObject;
 
@@ -10,9 +12,10 @@ public class QuadTree {
     private int MAX_LEVELS = 10;
 
     private int level;
-    private List<GameObject> objects;
-    private Rectangle bounds;
-    private QuadTree[] nodes;
+    private final List<GameObject> objects;
+    private final Rectangle bounds;
+    private final QuadTree[] nodes;
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public QuadTree(int pLevel, Rectangle pBounds) {
         level = pLevel;
@@ -22,13 +25,18 @@ public class QuadTree {
     }
 
     public void clear() {
-        objects.clear();
+        lock.writeLock().lock();
+        try {
+            objects.clear();
 
-        for (int i = 0; i < nodes.length; i++) {
-            if (nodes[i] != null) {
-                nodes[i].clear();
-                nodes[i] = null;
+            for (int i = 0; i < nodes.length; i++) {
+                if (nodes[i] != null) {
+                    nodes[i].clear();
+                    nodes[i] = null;
+                }
             }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -79,50 +87,74 @@ public class QuadTree {
 
     // Insert the object
     public void insert(GameObject circle) {
-        if (nodes[0] != null) {
-            ArrayList<Integer> index = getIndex(circle);
+        lock.writeLock().lock();
+        try {
+            if (nodes[0] != null) {
+                ArrayList<Integer> index = getIndex(circle);
 
-            if (index.size() > 0) {
-                for (Integer ind : index) {
-                    if (nodes[ind].bounds.contains(circle))
-                        nodes[ind].insert(circle);
-                }
-                return;
-            }
-        }
-
-        objects.add(circle);
-
-        if (objects.size() > MAX_OBJECTS && level < MAX_LEVELS) {
-            if (nodes[0] == null) {
-                split();
-            }
-
-            int i = 0;
-            while (i < objects.size()) {
-                ArrayList<Integer> index = getIndex(objects.get(i));
                 if (index.size() > 0) {
                     for (Integer ind : index) {
-                        if (nodes[ind].bounds.contains(objects.get(i)))
-                            nodes[ind].insert(objects.remove(i));
+                        if (nodes[ind].bounds.contains(circle)) {
+                            QuadTree child = nodes[ind];
+                            lock.writeLock().unlock();
+                            child.insert(circle);
+                            return;
+                        }
                     }
-                } else {
-                    i++;
                 }
+            }
+
+            objects.add(circle);
+
+            if (objects.size() > MAX_OBJECTS && level < MAX_LEVELS) {
+                if (nodes[0] == null) {
+                    split();
+                }
+
+                int i = 0;
+                while (i < objects.size()) {
+                    ArrayList<Integer> index = getIndex(objects.get(i));
+                    if (index.size() > 0) {
+                        GameObject obj = objects.remove(i);
+                        for (Integer ind : index) {
+                            if (nodes[ind].bounds.contains(obj)) {
+                                QuadTree child = nodes[ind];
+                                lock.writeLock().unlock();
+                                child.insert(obj);
+                                lock.writeLock().lock();
+                            }
+                        }
+                    } else {
+                        i++;
+                    }
+                }
+            }
+        } finally {
+            if (lock.writeLock().isHeldByCurrentThread()) {
+                lock.writeLock().unlock();
             }
         }
     }
 
     public List<GameObject> retrieve(List<GameObject> returnObjects, GameObject circle) {
-        ArrayList<Integer> index = getIndex(circle);
-        if (index.size() > 0 && nodes[0] != null) {
-            for (Integer ind : index) {
-                if (nodes[ind].bounds.contains(circle))
-                    nodes[ind].retrieve(returnObjects, circle);
+        lock.readLock().lock();
+        try {
+            ArrayList<Integer> index = getIndex(circle);
+            if (index.size() > 0 && nodes[0] != null) {
+                for (Integer ind : index) {
+                    if (nodes[ind].bounds.contains(circle)) {
+                        QuadTree child = nodes[ind];
+                        lock.readLock().unlock();
+                        child.retrieve(returnObjects, circle);
+                        lock.readLock().lock();
+                    }
+                }
             }
-        }
 
-        returnObjects.addAll(objects);
+            returnObjects.addAll(objects);
+        } finally {
+            lock.readLock().unlock();
+        }
 
         return returnObjects;
     }
