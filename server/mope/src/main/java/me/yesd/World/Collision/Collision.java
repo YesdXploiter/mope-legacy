@@ -2,10 +2,9 @@ package me.yesd.World.Collision;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
 
 import me.yesd.Constants;
 import me.yesd.World.Room;
@@ -24,33 +23,68 @@ public class Collision {
     }
 
     public void update() {
-        // Import objects
         tree.clear();
 
-        HashMap<Integer, GameObject> objects = new HashMap<Integer, GameObject>(room.getObjects().gameMap);
-        Set<Map.Entry<Integer, GameObject>> objectsSet = objects.entrySet();
-        Iterator<Map.Entry<Integer, GameObject>> objectsIterator = objectsSet.iterator();
-
-        while (objectsIterator.hasNext()) {
-            Map.Entry<Integer, GameObject> entry = objectsIterator.next();
-            GameObject o = entry.getValue();
+        HashMap<Integer, GameObject> objects = new HashMap<>(room.getObjects().gameMap);
+        for (GameObject o : objects.values()) {
             tree.insert(o);
         }
 
-        // Calculate
-        Iterator<Map.Entry<Integer, GameObject>> objectsIterator2 = objectsSet.iterator();
-        while (objectsIterator2.hasNext()) {
-            Map.Entry<Integer, GameObject> entry = objectsIterator2.next();
-            GameObject o = entry.getValue();
-            List<GameObject> returnObjects = new ArrayList<>();
-            tree.retrieve(returnObjects, o);
-            o.update();
+        ForkJoinPool pool = ForkJoinPool.commonPool();
+        List<CollisionPair> collisions = pool.invoke(new CollisionTask(tree));
 
-            for (GameObject obj : returnObjects) {
-                if (obj.isSolid() && o.isSolid() && o.isCircle() && obj.isCircle()) {
-                    impulseCollision(o, obj);
+        for (CollisionPair pair : collisions) {
+            impulseCollision(pair.a, pair.b);
+        }
+    }
+
+    private class CollisionTask extends RecursiveTask<List<CollisionPair>> {
+        private final QuadTree node;
+
+        CollisionTask(QuadTree node) {
+            this.node = node;
+        }
+
+        @Override
+        protected List<CollisionPair> compute() {
+            List<CollisionPair> result = new ArrayList<>();
+            QuadTree[] children = node.getNodes();
+            List<CollisionTask> tasks = new ArrayList<>();
+
+            for (QuadTree child : children) {
+                if (child != null) {
+                    CollisionTask task = new CollisionTask(child);
+                    task.fork();
+                    tasks.add(task);
                 }
             }
+
+            for (CollisionTask task : tasks) {
+                result.addAll(task.join());
+            }
+
+            for (GameObject o : node.getObjects()) {
+                List<GameObject> returnObjects = new ArrayList<>();
+                tree.retrieve(returnObjects, o);
+                o.update();
+
+                for (GameObject obj : returnObjects) {
+                    if (obj.isSolid() && o.isSolid() && o.isCircle() && obj.isCircle()) {
+                        result.add(new CollisionPair(o, obj));
+                    }
+                }
+            }
+            return result;
+        }
+    }
+
+    private static class CollisionPair {
+        final GameObject a;
+        final GameObject b;
+
+        CollisionPair(GameObject a, GameObject b) {
+            this.a = a;
+            this.b = b;
         }
     }
 
