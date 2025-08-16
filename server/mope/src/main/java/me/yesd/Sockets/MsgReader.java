@@ -2,6 +2,7 @@ package me.yesd.Sockets;
 
 import me.yesd.Utilities.PacketException;
 import me.yesd.Utilities.Utilities;
+import java.nio.charset.StandardCharsets;
 
 public class MsgReader {
     private int offset;
@@ -55,11 +56,11 @@ public class MsgReader {
     }
 
     public String readString() throws PacketException {
-        StringBuilder sb = new StringBuilder();
         int length = this.readUInt16();
+        byte[] bytes = new byte[length];
         for (int i = 0; i < length; ++i) {
-            sb.append((char) this.readUInt8());
+            bytes[i] = (byte) this.readUInt8();
         }
-        return Utilities.decode_utf8(sb.toString());
+        return Utilities.decode_utf8(new String(bytes, StandardCharsets.UTF_8));
     }
 }
