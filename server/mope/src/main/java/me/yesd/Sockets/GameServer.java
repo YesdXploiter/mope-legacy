@@ -17,7 +17,7 @@ public class GameServer extends WebSocketServer {
     private Room room;
 
     public GameServer(Room room) {
-        super(new InetSocketAddress("0.0.0.0", 2255));
+        super(new InetSocketAddress("0.0.0.0", Constants.PORT));
         this.setReuseAddr(true);
         if (Constants.USINGSSL) {
             this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(SSL.getContext()));
