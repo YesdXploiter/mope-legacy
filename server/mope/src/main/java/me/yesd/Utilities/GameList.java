@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import me.yesd.World.Objects.GameObject;
 
 public class GameList implements Iterable<GameObject> {
-    public HashMap<Integer, GameObject> gameMap;
+    private final HashMap<Integer, GameObject> gameMap;
 
     public GameList(final GameList copy) {
-        this.gameMap = new HashMap<Integer, GameObject>();
         this.gameMap = new HashMap<Integer, GameObject>(copy.gameMap);
     }
 
     public List<GameObject> subList(int startIndex, int endIndex) {
-        List<GameObject> list = new ArrayList<>();
-        if (endIndex > gameMap.size())
-            endIndex = gameMap.size();
-        for (int i = startIndex; i < endIndex; i++) {
-            list.add(gameMap.get(i));
+        List<GameObject> values = new ArrayList<>(gameMap.values());
+        int from = Math.max(0, startIndex);
+        int to = Math.min(endIndex, values.size());
+        if (from > to) {
+            return new ArrayList<>();
         }
-        return list;
+        return new ArrayList<>(values.subList(from, to));
     }
 
     public List<GameObject> toList() {
@@ -37,7 +37,7 @@ public class GameList implements Iterable<GameObject> {
         this.gameMap = new HashMap<Integer, GameObject>();
     }
 
-    public Object get(final int id) {
+    public GameObject get(final int id) {
         return this.gameMap.get(id);
     }
 
@@ -46,11 +46,15 @@ public class GameList implements Iterable<GameObject> {
     }
 
     public void add(final int id, final GameObject object) {
-        this.gameMap.put(object.getID(), object);
+        this.gameMap.put(id, object);
     }
 
     public void remove(final GameObject object) {
         this.gameMap.remove(object.getID(), object);
+    }
+
+    public Map<Integer, GameObject> getGameMap() {
+        return this.gameMap;
     }
 
     @Override
