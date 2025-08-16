@@ -127,4 +127,12 @@ public class QuadTree {
         return returnObjects;
     }
 
+    public QuadTree[] getNodes() {
+        return nodes;
+    }
+
+    public List<GameObject> getObjects() {
+        return objects;
+    }
+
 }
