@@ -60,13 +60,11 @@ public class MsgWriter {
 
     public void writeString(String string) {
         string = Utilities.encode_utf8(string);
-        writeUInt16((short) (string.length() + 1));
+        writeUInt16((short) string.length());
 
         for (int i = 0; i < string.length(); ++i) {
             writeByte((byte) string.charAt(i));
         }
-
-        writeByte((byte) 109);
     }
 
     public byte[] getData() {
