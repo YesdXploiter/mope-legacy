@@ -34,7 +34,12 @@ public class GameServer extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        room.getClient(conn).onClose();
+        GameClient client = room.getClient(conn);
+        if (client != null) {
+            client.onClose();
+        } else {
+            System.out.println("Client not found on close: " + conn);
+        }
         room.removeClient(conn);
         System.out.println("deacc");
     }
@@ -47,7 +52,12 @@ public class GameServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, final ByteBuffer blob) {
         try {
-            room.getClient(conn).onMessage(blob.array());
+            GameClient client = room.getClient(conn);
+            if (client != null) {
+                client.onMessage(blob.array());
+            } else {
+                System.out.println("Client not found for message: " + conn);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
