@@ -173,7 +173,7 @@ public class GameClient {
                 default:
                     break;
             }
-        } catch (Exception | PacketException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             this.sendDisconnect("MOPERR_000");
         }
