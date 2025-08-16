@@ -48,7 +48,7 @@ public class Room extends Thread {
 
     private VolcanoBiome volcanoBiome;
 
-    public static GameList objects;
+    public GameList objects;
 
     private Ocean oleft;
 
@@ -203,7 +203,7 @@ public class Room extends Thread {
     private void update() {
         // Build quadtree for collision checks
         QuadTree tree = new QuadTree(0, new Rectangle(0, 0, Constants.WIDTH, Constants.HEIGHT));
-        HashMap<Integer, GameObject> objectsCopy = new HashMap<Integer, GameObject>(objects.gameMap);
+        HashMap<Integer, GameObject> objectsCopy = new HashMap<Integer, GameObject>(this.objects.gameMap);
         for (GameObject o : objectsCopy.values()) {
             tree.insert(o);
         }
@@ -246,7 +246,7 @@ public class Room extends Thread {
             }
         }
 
-        objects = updated;
+        this.objects = updated;
 
         // After world calculations, sync clients
         Set<Map.Entry<WebSocket, GameClient>> clientsSet = clients.entrySet();
@@ -343,6 +343,6 @@ public class Room extends Thread {
     }
 
     public GameList getObjects() {
-        return objects;
+        return this.objects;
     }
 }
