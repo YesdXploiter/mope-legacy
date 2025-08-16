@@ -17,6 +17,8 @@ public class Collision {
 
     private Room room;
     private QuadTree tree;
+    private static final ThreadLocal<List<GameObject>> RETURN_OBJECTS =
+            ThreadLocal.withInitial(ArrayList::new);
 
     public Collision(Room room) {
         this.room = room;
@@ -39,10 +41,11 @@ public class Collision {
 
         // Calculate
         Iterator<Map.Entry<Integer, GameObject>> objectsIterator2 = objectsSet.iterator();
+        List<GameObject> returnObjects = RETURN_OBJECTS.get();
         while (objectsIterator2.hasNext()) {
             Map.Entry<Integer, GameObject> entry = objectsIterator2.next();
             GameObject o = entry.getValue();
-            List<GameObject> returnObjects = new ArrayList<>();
+            returnObjects.clear();
             tree.retrieve(returnObjects, o);
             o.update();
 
@@ -52,6 +55,7 @@ public class Collision {
                 }
             }
         }
+        returnObjects.clear();
     }
 
     private static void impulseCollision(GameObject obj1, GameObject obj2) {
