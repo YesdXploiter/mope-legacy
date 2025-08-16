@@ -1,34 +1,55 @@
 # Mope Legacy
 
-Mope Legacy is an open-source reimplementation of the 2018 server for the browser game [mope.io](https://mope.io). The project ships with a standalone server and a minimal client so the community can continue to enjoy this classic version of the game.
+Mope Legacy is an open-source recreation of the 2018 [mope.io](https://mope.io) server.
+The repository contains a cross-platform Java server (`server/`) and a minimal browser client (`client/`) so the community can keep playing this classic version of the game.
 
 ## Features
-- Fast and lightweight.
-- Under active development.
-- Easy to set up.
-- Fully open source.
+- Faithful reproduction of mope.io 2018 mechanics and content.
+- Java server capable of handling hundreds of players.
+- Multiple game modes and configurable starting tiers.
+- Simple static HTML/JS client with built-in "LOCAL" server entry.
+- Easy to build and run on any platform with Java 17+.
+- Fully open source and actively developed.
 
-## Requirements
-- Java 17+ (JDK)
-- Maven 3+
+## Prerequisites
+- Java Runtime **and** JDK 17 or newer.
+- [Apache Maven](https://maven.apache.org/) 3+.
 
 ## Getting a Release
-Pre-built server packages are available on the [releases page](https://github.com/YesdXploiter/mope-legacy/releases).
+Pre-built server jars are published on the [releases page](https://github.com/YesdXploiter/mope-legacy/releases).
 
-## Building from Source
-1. Clone this repository.
-2. From `server/mope`, run `mvn clean package`.
-3. The resulting `mopelegacyserver.jar` will be placed in `server/mope/target`.
+## Build from Source
+1. Clone the repository.
+2. Build the server module:
+   ```bash
+   cd server/mope
+   mvn clean package
+   ```
+3. The compiled `mopelegacyserver.jar` will be in `server/mope/target/`.
 
-## Running
-To start the server from the command line:
+## Configuration
+Server options are stored in `server/config.txt`:
+- `startTier` – starting animal tier for new players (default `1`).
+- `max_players` – maximum number of concurrent players.
+- `serverPort` – port the server listens on (default `2255`).
+- `gameMode` – numeric identifier for the game mode.
 
+Adjust the file before running the server.
+
+## Running the Server
+Run the packaged jar from the directory containing `config.txt`:
+```bash
+java -jar mopelegacyserver.jar
 ```
-java -jar mopelegacyserver.jar <options>
-```
+
+## Client
+The `client/` directory contains the web client.
+- Open `client/index.html` directly in a browser or host the folder on any static web server.
+- A default `LOCAL` server entry pointing to `localhost:2255` is included.  
+  To use a different host or port, edit the `addServerDef` call in `client/client.js`.
 
 ## Contributing
-Pull requests are welcome! If you plan to make large changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome! For major changes, please open an issue to discuss your ideas and ensure tests pass before submitting.
 
 ### Contributors
 - [YesdXploiter](https://github.com/YesdXploiter)
@@ -40,4 +61,3 @@ Pull requests are welcome! If you plan to make large changes, please open an iss
 
 ## License
 This project is licensed under the [GPL-3.0 License](LICENSE).
-
