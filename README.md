@@ -1,46 +1,43 @@
 # Mope Legacy
 
-## Description
-
-Mope Legacy is an open-source project that serves as a server (also contains a client) for the 2018 version of the game mope.io. The project is still under active development and aims to recreate the experience of playing the game as it was during that year. We are committed to ensuring that the game's community continues to enjoy this version of the game.
+Mope Legacy is an open-source reimplementation of the 2018 server for the browser game [mope.io](https://mope.io). The project ships with a standalone server and a minimal client so the community can continue to enjoy this classic version of the game.
 
 ## Features
+- Fast and lightweight.
+- Under active development.
+- Easy to set up.
+- Fully open source.
 
-* Fast.
-* Under active development.
-* Easy to setup.
-* Open source.
+## Requirements
+- Java 17+ (JDK)
+- Maven 3+
 
-## Usage requirements
+## Getting a Release
+Pre-built server packages are available on the [releases page](https://github.com/YesdXploiter/mope-legacy/releases).
 
-* Java 17+
+## Building from Source
+1. Clone this repository.
+2. From `server/mope`, run `mvn clean package`.
+3. The resulting `mopelegacyserver.jar` will be placed in `server/mope/target`.
 
-## Get a release
+## Running
+To start the server from the command line:
 
-Releases of the server you can get from [here](https://github.com/YesdXploiter/mope-legacy/releases).
+```
+java -jar mopelegacyserver.jar <options>
+```
 
-## Building requirements
+## Contributing
+Pull requests are welcome! If you plan to make large changes, please open an issue first to discuss what you would like to change.
 
-* Java 17+
-* JDK 17+
-* Maven
+### Contributors
+- [YesdXploiter](https://github.com/YesdXploiter)
+- [RussianMopeRU](https://github.com/RussianMopeRU)
+- [ProXYGamer1](https://github.com/ProXYGamer1)
 
-## Building
+### Special Thanks
+- [PashaGames](https://github.com/pashagamesold) – created much of the server foundation.
 
-1. Clone project.
-2. Open your CLI with Maven installed in server/mope directory.
-3. Build the server with `mvn clean package`.
-4. Target .jar will be in server/mope/target, named mopelegacyserver.jar.
-5. Now you can start the server!
+## License
+This project is licensed under the [GPL-3.0 License](LICENSE).
 
-## Starting
-To run Mope Legacy from the command line without a GUI, enter  
-`java -jar mopelegacyserver.jar <options>`.
-
-## Contributors
-* [YesdXploiter](https://github.com/YesdXploiter)
-* [RussianMopeRU](https://github.com/RussianMopeRU)
-* [ProXYGamer1](https://github.com/ProXYGamer1)
-
-## Special Thanks
-* [PashaGames](https://github.com/pashagamesold) - Did a lot of work on creating the basis of the server.
