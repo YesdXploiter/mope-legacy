@@ -55,8 +55,14 @@ public class GameServer extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onError'");
+        ex.printStackTrace();
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
