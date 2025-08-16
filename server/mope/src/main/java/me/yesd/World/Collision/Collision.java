@@ -146,7 +146,7 @@ public class Collision {
         } /*
            * else if(distance > (obj1.getRadius() + obj2.getRadius()) && distance >
            * (obj1.getRadius() * 2 + obj2.getRadius() * 2) && obj2.getType() == 3) {
-           * Room.objects.remove(obj2);
+           *     // remove obj2 from the room's object list
            * }
            */
     }
