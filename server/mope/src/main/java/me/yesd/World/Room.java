@@ -1,9 +1,16 @@
 package me.yesd.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.java_websocket.WebSocket;
 
@@ -13,6 +20,8 @@ import me.yesd.Utilities.GameList;
 import me.yesd.Utilities.MessageType;
 import me.yesd.Utilities.Utilities;
 import me.yesd.World.Collision.Collision;
+import me.yesd.World.Collision.QuadTree.QuadTree;
+import me.yesd.World.Collision.QuadTree.Rectangle;
 import me.yesd.World.Objects.GameObject;
 import me.yesd.World.Objects.Biome.Arctic;
 import me.yesd.World.Objects.Biome.Beach;
@@ -46,6 +55,9 @@ public class Room extends Thread {
     private Ocean oright;
 
     private Collision collision;
+
+    private final ExecutorService executor = Executors
+            .newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     public Room() {
         this.width = Constants.WIDTH;
@@ -189,6 +201,54 @@ public class Room extends Thread {
     }
 
     private void update() {
+        // Build quadtree for collision checks
+        QuadTree tree = new QuadTree(0, new Rectangle(0, 0, Constants.WIDTH, Constants.HEIGHT));
+        HashMap<Integer, GameObject> objectsCopy = new HashMap<Integer, GameObject>(objects.gameMap);
+        for (GameObject o : objectsCopy.values()) {
+            tree.insert(o);
+        }
+
+        // Split objects into segments and process in parallel
+        List<GameObject> objectList = new ArrayList<>(objectsCopy.values());
+        int threads = Runtime.getRuntime().availableProcessors();
+        int segmentSize = (int) Math.ceil(objectList.size() / (double) threads);
+        List<Future<List<GameObject>>> futures = new ArrayList<>();
+
+        for (int i = 0; i < objectList.size(); i += segmentSize) {
+            final int start = i;
+            final int end = Math.min(i + segmentSize, objectList.size());
+            Callable<List<GameObject>> task = () -> {
+                List<GameObject> segment = objectList.subList(start, end);
+                for (GameObject obj : segment) {
+                    List<GameObject> returnObjects = new ArrayList<>();
+                    tree.retrieve(returnObjects, obj);
+                    obj.update();
+                    for (GameObject other : returnObjects) {
+                        if (other.isSolid() && obj.isSolid() && obj.isCircle() && other.isCircle()) {
+                            impulseCollision(obj, other);
+                        }
+                    }
+                }
+                return segment;
+            };
+            futures.add(executor.submit(task));
+        }
+
+        GameList updated = new GameList();
+        for (Future<List<GameObject>> future : futures) {
+            try {
+                for (GameObject obj : future.get()) {
+                    updated.add(obj);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        objects = updated;
+
+        // After world calculations, sync clients
         Set<Map.Entry<WebSocket, GameClient>> clientsSet = clients.entrySet();
         Iterator<Map.Entry<WebSocket, GameClient>> clientsIterator = clientsSet.iterator();
         while (clientsIterator.hasNext()) {
@@ -196,8 +256,6 @@ public class Room extends Thread {
             GameClient client = entry.getValue();
             client.update();
         }
-
-        collision.update();
     }
 
     public void removeObj(GameObject object, GameObject killer) {
@@ -239,6 +297,35 @@ public class Room extends Thread {
             return volcanoBiome;
         else
             return land;
+    }
+
+    private static void impulseCollision(GameObject obj1, GameObject obj2) {
+        double dx = obj2.getX() - obj1.getX();
+        double dy = obj2.getY() - obj1.getY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < obj1.getRadius() + obj2.getRadius()) {
+            double angle = Math.atan2(dy, dx);
+            double overlap = obj1.getRadius() + obj2.getRadius() - distance;
+
+            double displacementX = overlap * Math.cos(angle);
+            double displacementY = overlap * Math.sin(angle);
+
+            if (obj1.isMovable() && obj2.isMovable()) {
+                double totalMass = obj1.getMass() + obj2.getMass();
+                double obj1Ratio = obj2.getMass() / totalMass;
+                double obj2Ratio = obj1.getMass() / totalMass;
+
+                obj1.setPosition(obj1.getX() - displacementX * obj1Ratio,
+                        obj1.getY() - displacementY * obj1Ratio);
+                obj2.setPosition(obj2.getX() + displacementX * obj2Ratio,
+                        obj2.getY() + displacementY * obj2Ratio);
+            } else if (obj1.isMovable()) {
+                obj1.setPosition(obj1.getX() - displacementX, obj1.getY() - displacementY);
+            } else if (obj2.isMovable()) {
+                obj2.setPosition(obj2.getX() + displacementX, obj2.getY() + displacementY);
+            }
+        }
     }
 
     @Override
