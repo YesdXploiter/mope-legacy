@@ -55,8 +55,8 @@ public class QuadTree {
     // Determine which node the object belongs to.
     private ArrayList<Integer> getIndex(GameObject circle) {
         ArrayList<Integer> index = new ArrayList<>();
-        double verticalMidpoint = bounds.getX() + (bounds.getWidth());
-        double horizontalMidpoint = bounds.getY() + (bounds.getHeight());
+        double verticalMidpoint = bounds.getX() + bounds.getWidth() / 2.0;
+        double horizontalMidpoint = bounds.getY() + bounds.getHeight() / 2.0;
 
         // Object can completely fit within the top quadrants
         boolean topQuadrant = (circle.getY() < horizontalMidpoint
