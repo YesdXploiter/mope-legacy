@@ -2,7 +2,6 @@ package me.yesd.World.Collision.QuadTree;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import me.yesd.World.Objects.GameObject;
@@ -15,7 +14,7 @@ public class QuadTree {
     private final List<GameObject> objects;
     private final Rectangle bounds;
     private final QuadTree[] nodes;
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public QuadTree(int pLevel, Rectangle pBounds) {
         level = pLevel;
